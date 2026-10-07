@@ -1,0 +1,108 @@
+/* ── in the shell: an in-flow strip under the top bar (pushes the page down, never covers it — F57) ───────── */
+.conn-strip-live {
+  flex: none;
+}
+.conn-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 4px 12px 4px 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--warning) 35%, var(--line));
+  background: color-mix(in srgb, var(--warning) 10%, var(--bg-1));
+  color: var(--text-0);
+  font-size: var(--fs-sm);
+  animation: conn-strip-in var(--dur-2) var(--ease-out);
+}
+@keyframes conn-strip-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ── bare pages (setup, Talk mode): a floating pill, centred, never wider than the window ────────────────── */
+.conn-banner-live {
+  position: fixed;
+  z-index: var(--z-banner);
+  top: calc(var(--bar-h) + 8px + env(safe-area-inset-top));
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.conn-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 6px 6px 14px;
+  border-radius: var(--r-full);
+  background: var(--surface-over);
+  border: 1px solid color-mix(in srgb, var(--warning) 45%, var(--line));
+  box-shadow: var(--shadow-2);
+  color: var(--text-0);
+  font-size: var(--fs-sm);
+  pointer-events: auto;
+  animation: conn-in var(--dur-2) var(--ease-out);
+}
+@keyframes conn-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* ── shared parts ─────────────────────────────────────────────────────────────────────────────────────── */
+.conn-strip svg,
+.conn-banner svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--warning-ink);
+}
+.conn__text {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.conn__short {
+  display: none;
+}
+.conn__action {
+  flex: none;
+  min-height: max(26px, var(--target));
+  padding: 0 12px;
+  border-radius: var(--r-full);
+  background: var(--bg-3);
+  color: var(--text-0);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.conn__action:hover {
+  background: var(--bg-4);
+}
+.conn-strip .conn__action {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+}
+.conn-strip .conn__action:hover {
+  background: var(--bg-3);
+}
+
+/* Phones: one line — the short label next to the button. */
+@media (max-width: 719.98px) {
+  .conn__long {
+    display: none;
+  }
+  .conn__short {
+    display: inline;
+  }
+  .conn-strip {
+    justify-content: space-between;
+    padding: 4px max(8px, env(safe-area-inset-right)) 4px max(16px, env(safe-area-inset-left));
+  }
+}

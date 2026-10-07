@@ -1,0 +1,379 @@
+/*
+ * Talk mode (07 D6): a calm full-window stage. The Star sits in a round night window (04: the Star keeps a dark stage
+ * in the light theme); captions under it; four controls at the bottom (44 px+ targets, safe areas on phones, 07 D8).
+ */
+.talk {
+  --talk-star: min(46vh, 460px, 84vw);
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg-0);
+  color: var(--text-0);
+}
+
+/* ── header (above the bare layout's drag overlay; the empty parts stay draggable) ── */
+.talk__bar {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  height: var(--bar-h);
+  padding: 0 calc(12px + var(--caption-w)) 0 12px;
+  padding-top: env(safe-area-inset-top);
+  box-sizing: content-box;
+}
+.talk__back {
+  justify-self: start;
+}
+.talk__bar > .tooltip-anchor,
+.talk__bar > .icon-btn {
+  justify-self: end;
+}
+.talk__heading {
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+  max-width: min(52vw, 520px);
+  text-align: center;
+}
+.talk__eyebrow {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 560;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.talk__title {
+  max-width: 100%;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── stage ── */
+.talk__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  padding: clamp(4px, 2vh, 20px) 16px 0;
+  gap: 10px;
+}
+.talk__stage {
+  position: relative;
+  flex: none;
+  width: var(--talk-star);
+  height: var(--talk-star);
+  border-radius: 50%;
+  /* Light theme: a round night window (04 Themes), crisp at the edge, with a faint rim of starlight. */
+  background: radial-gradient(closest-side, var(--star-night-2) 0%, var(--star-night-1) 62%, var(--star-night-0) 97%, transparent 100%);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 24px 60px -24px color-mix(in srgb, var(--star-night-1) 55%, transparent);
+}
+/* Dark theme: the window melts into the page — just a breath of indigo behind the Star. */
+:root:not([data-theme='light']) .talk__stage {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--star-night-2) 75%, transparent) 0%, transparent 100%);
+  box-shadow: none;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] .talk__stage {
+    background: radial-gradient(closest-side, var(--star-night-2) 0%, var(--star-night-1) 62%, var(--star-night-0) 97%, transparent 100%);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+      0 24px 60px -24px color-mix(in srgb, var(--star-night-1) 55%, transparent);
+  }
+}
+:root:not([data-theme='light'])[data-theme] .talk {
+  background: radial-gradient(70% 55% at 50% 30%, color-mix(in srgb, var(--accent) 6%, transparent) 0%, transparent 70%), var(--bg-0);
+}
+.star-slot--fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+.talk__state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  color: var(--text-1);
+  font-size: var(--fs-lg);
+  font-weight: 520;
+  letter-spacing: 0.01em;
+}
+.talk[data-phase='speaking'] .talk__state {
+  color: var(--accent-ink);
+}
+.talk[data-phase='error'] .talk__state {
+  color: var(--danger);
+}
+.talk__notice {
+  width: min(100%, 560px);
+}
+
+/* ── captions ── */
+.talk__captions {
+  flex: 1;
+  min-height: 0;
+  width: min(100%, 640px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 8px 4px 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 36px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 36px);
+}
+.talk__history {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+.talk__history > li {
+  overflow-wrap: anywhere;
+}
+.talk__history > li[data-role='user'] {
+  text-align: right;
+}
+/* The newest turn is the caption: larger and brighter (Vesper's reply is revealed with the voice there, R14). */
+.talk__history > li:last-child {
+  color: var(--text-0);
+  font-size: calc(var(--msg-fs) + 2px);
+  line-height: 1.6;
+}
+.talk__history > li:last-child[data-role='user'] {
+  color: var(--text-1);
+  font-size: var(--fs-lg);
+}
+.talk__who {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.talk__you {
+  align-self: flex-end;
+  max-width: 85%;
+  padding: 8px 12px;
+  border-radius: var(--r-lg);
+  background: var(--user-bubble);
+  color: var(--text-1);
+  font-size: var(--fs-lg);
+  font-style: italic;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.talk__you[data-final] {
+  color: var(--text-0);
+  font-style: normal;
+}
+.talk__you .talk__who {
+  font-style: normal;
+}
+.talk__reply {
+  color: var(--text-0);
+  font-size: calc(var(--msg-fs) + 2px);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* ── controls ── */
+.talk__controls {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 12px 16px calc(18px + env(safe-area-inset-bottom));
+}
+.talk__buttons {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: clamp(16px, 4vw, 36px);
+  width: min(100%, 520px);
+}
+.talk__side {
+  display: flex;
+  gap: clamp(14px, 3vw, 28px);
+}
+.talk__side--start {
+  justify-content: flex-end;
+}
+.talk__side--end {
+  justify-content: flex-start;
+}
+.talk__control {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding-top: 12px;
+}
+.talk__control-btn.icon-btn {
+  --ib: 48px;
+  border-radius: 50%;
+}
+.talk__control-btn.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.talk__control-btn.icon-btn--danger {
+  background: color-mix(in srgb, var(--danger) 12%, var(--bg-2));
+  border-color: color-mix(in srgb, var(--danger) 30%, transparent);
+}
+.talk__control-btn[aria-pressed='true'] {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent-ink);
+}
+.talk__control-label {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 520;
+}
+
+.talk__primary {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  cursor: pointer;
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--accent) 14%, transparent),
+    0 8px 28px color-mix(in srgb, var(--accent) 35%, transparent);
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    transform var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+.talk__primary svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2;
+}
+.talk__primary:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+.talk__primary:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.talk__primary:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px var(--bg-0),
+    0 0 0 6px var(--accent);
+}
+.talk__primary:disabled {
+  cursor: default;
+  opacity: 0.55;
+  box-shadow: none;
+}
+.talk__primary[data-action='interrupt'] {
+  background: var(--text-0);
+  color: var(--bg-0);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--text-0) 10%, transparent);
+}
+.talk__primary[data-action='interrupt'] svg {
+  fill: currentColor;
+  width: 22px;
+  height: 22px;
+}
+.talk__primary[data-action='unmute'] {
+  background: var(--bg-3);
+  color: var(--text-0);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--text-0) 6%, transparent);
+}
+.talk__primary-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+/* Listening: a slow breathing ring (none under reduced motion). */
+.talk__primary[data-action='hold'] .talk__primary-ring,
+.talk__primary[data-action='send'] .talk__primary-ring {
+  opacity: 1;
+  animation: talk-breathe 2.4s ease-in-out infinite;
+}
+@keyframes talk-breathe {
+  50% {
+    transform: scale(1.12);
+    opacity: 0.25;
+  }
+}
+:root[data-reduce-motion='true'] .talk__primary-ring {
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .talk__primary-ring {
+    animation: none !important;
+  }
+}
+.talk__hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 20px;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+
+/* ── phones (07 D8) ── */
+@media (max-width: 719.98px) {
+  .talk {
+    --talk-star: min(38vh, 76vw);
+  }
+  .talk__bar {
+    padding-right: 8px;
+    padding-left: 4px;
+  }
+  .talk__heading {
+    max-width: 52vw;
+  }
+  .talk__buttons {
+    gap: 14px;
+  }
+  .talk__side {
+    gap: 12px;
+  }
+  .talk__control-btn.icon-btn {
+    --ib: 52px;
+  }
+  .talk__you {
+    font-size: var(--fs-md);
+  }
+}
+@media (max-height: 640px) {
+  .talk {
+    --talk-star: min(34vh, 300px, 80vw);
+  }
+  .talk__controls {
+    padding-top: 6px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+}

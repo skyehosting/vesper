@@ -1,0 +1,164 @@
+/*
+ * The chat backdrop (presence v2 layout; backdrop.logic.ts). The layer fills the chat body and sits under the message
+ * list in paint order (the list is positioned and comes later in the DOM). The layer must NOT be a stacking context
+ * (no z-index / opacity / transform / filter here): in the light theme the avatar box blends (multiply) with the page
+ * under it, and a stacking context in between would leave it blending with nothing (a white square).
+ */
+.chat-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+  user-select: none;
+}
+.chat-backdrop:not([data-ready]) {
+  visibility: hidden;
+}
+
+.chat-backdrop__avatar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition:
+    transform 720ms var(--ease-out),
+    opacity 520ms var(--ease-out);
+}
+/* Armilla's box is wide (its horizon line); nothing to round off. */
+.chat-backdrop[data-avatar='armilla'] .chat-backdrop__avatar {
+  border-radius: 0;
+}
+/* Tracking the hero anchor while the empty state scrolls: no lag behind the content. */
+.chat-backdrop[data-follow] .chat-backdrop__avatar {
+  transition: opacity 520ms var(--ease-out);
+}
+/* Reading: fade down a little faster, come back slowly. */
+.chat-backdrop[data-reading] .chat-backdrop__avatar {
+  transition:
+    transform 720ms var(--ease-out),
+    opacity 260ms var(--ease-out);
+}
+/* The first placement (mount, session switch, route change) is never animated: it appears where it belongs (v1.1.3). */
+.chat-backdrop:not([data-animate]) .chat-backdrop__avatar {
+  transition: none;
+}
+
+/*
+ * Light theme: the avatar's light becomes ink. The box is black with the light added on it (the canvas / 2D star),
+ * inverted (black → white, light → its complement) and hue-rotated back (≈ the accent's hue, darker), then multiplied
+ * with the page: white leaves the page as it is, the ink darkens it — never more than the cap (stageLook.ts).
+ */
+.chat-backdrop[data-ink] .chat-backdrop__avatar {
+  background: #000;
+  filter: invert(1) hue-rotate(180deg);
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-backdrop__avatar {
+    transition: opacity 200ms linear;
+  }
+}
+:root[data-reduce-motion='true'] .chat-backdrop__avatar {
+  transition: opacity 200ms linear;
+}
+
+/* An empty chat's hero slot (AvatarAnchor): room above the greeting; the avatar is drawn by the backdrop under it. */
+.avatar-anchor {
+  flex: none;
+  max-width: 100%;
+  margin: 0 auto;
+  pointer-events: none;
+}
+
+/* ── the top bar's presence group (PresenceControls) ─────────────────────────────────────────────────────────────── */
+.presence-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  padding: 0 6px;
+  color: var(--text-1);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+.presence-state__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.presence-state[data-state='listening'] .presence-state__dot {
+  background: var(--info);
+}
+.presence-state:is([data-state='error'], [data-state='offline'], [data-state='muted']) .presence-state__dot {
+  background: var(--text-2);
+}
+
+/* ── Settings' live preview (AvatarPreview, v1.1.3): a slice of a conversation with the avatar behind it ─────────── */
+.avatar-preview {
+  display: grid;
+  gap: 8px;
+}
+.avatar-preview__frame {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  /* The chat's own page: the avatar's light (or ink) and the sample text sit on what they sit on in a chat. */
+  background: var(--bg-0);
+  /* Secondary ink over the backdrop, as in the chat (chat.css). */
+  --text-2: #b3aecb;
+}
+:root[data-theme='light'] .avatar-preview__frame {
+  --text-2: #57526e;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] .avatar-preview__frame {
+    --text-2: #57526e;
+  }
+}
+.avatar-preview__text {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  height: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 24px;
+  pointer-events: none;
+  user-select: none;
+}
+.avatar-preview__msg {
+  margin: 0;
+  color: var(--text-0);
+  font-size: var(--fs-md, 15px);
+  line-height: 1.55;
+}
+.avatar-preview__meta {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+.avatar-preview__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.avatar-preview__caption {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+@media (max-width: 719.98px) {
+  .avatar-preview__frame {
+    height: 240px;
+  }
+}

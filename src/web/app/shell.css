@@ -1,0 +1,587 @@
+/* ── window drag regions (desktop window with titleBarOverlay) ───────────────────────────────── */
+.app-drag {
+  -webkit-app-region: drag;
+  app-region: drag;
+  user-select: none;
+}
+.app-drag :is(button, a, input, textarea, select, [role='button'], [tabindex], .tooltip-anchor),
+.no-drag {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+/* ── layout ───────────────────────────────────────────────────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  height: 100%;
+  height: 100dvh;
+  background: var(--bg-0);
+}
+
+.shell__sidebar {
+  width: var(--sidebar-w);
+  min-height: 0;
+  background: var(--bg-1);
+  border-right: 1px solid var(--line);
+}
+.shell--wide:not(.has-sidebar) .shell__sidebar {
+  display: none;
+}
+
+/* Each part keeps its own column: a hidden (display: none) sidebar or panel does not take a grid cell, and auto-placement
+   would otherwise drop the chat into the narrow first column when the sidebar is collapsed. */
+.shell__sidebar {
+  grid-column: 1;
+}
+.shell__panel {
+  grid-column: 3;
+}
+
+.shell__main {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ── top bar ──────────────────────────────────────────────────────────────────────────────── */
+.shell__topbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  height: var(--bar-h);
+  padding: 0 8px;
+  padding-right: calc(8px + var(--caption-w));
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-0);
+  container-type: inline-size;
+  container-name: topbar;
+}
+.shell--wide.has-panel .shell__topbar {
+  padding-right: 8px;
+}
+.shell__slot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding-left: 4px;
+}
+.shell__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.shell__actions:empty {
+  display: none;
+}
+.shell__voice.is-on {
+  color: var(--accent-ink);
+}
+
+.shell__game {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  margin: 0 4px;
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
+  color: var(--text-0);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.shell__game svg {
+  width: 14px;
+  height: 14px;
+  color: var(--warning);
+}
+
+/* "Update ready — Restart" (H-v12-updates): like the game-mode pill, in the accent colour. */
+.shell__update {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 4px 0 10px;
+  margin: 0 4px;
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--text-0);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.shell__update > svg {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+}
+
+.shell__update button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--text-0);
+  font: inherit;
+  cursor: pointer;
+}
+
+.shell__update-go {
+  padding: 0 8px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.shell__update-x {
+  width: 22px;
+  color: var(--text-1);
+}
+
+.shell__update-x svg {
+  width: 13px;
+  height: 13px;
+}
+
+.shell__update button:hover {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.shell__update button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.shell__update button:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.shell__content {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* ── the chat header (SessionHeader) ──────────────────────────────────────────────────────── */
+.shead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding-left: 4px;
+  /* The header's own width decides what it drops (below): it already accounts for every other top-bar control
+     (the panel and sidebar buttons, Game mode, the window caption), which the bar's width alone did not. */
+  container: shead / inline-size;
+}
+/* The title is the part of the header that gives way first (fix5-ui P05): it ellipsizes down to 80 px before the
+   chips give up anything (its large shrink factor takes the whole shortfall; the chips' 1 only counts once the title
+   is at its floor). */
+.shead__title {
+  min-width: 80px;
+  flex: 0 1000 auto;
+  margin-left: -4px;
+  font-size: var(--fs-md);
+  font-weight: 620;
+  line-height: 1.2;
+}
+.shead__title-btn,
+.shead__title-text {
+  display: block;
+  max-width: 100%;
+  padding: 5px 8px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-0);
+  text-align: left;
+}
+.shead__title-text--muted {
+  color: var(--text-2);
+}
+.shead__title-btn:hover {
+  background: var(--bg-3);
+}
+.shead__title-input {
+  flex: 0 1 360px;
+  min-width: 120px;
+  height: 30px;
+  padding: 0 8px;
+  margin-left: -4px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--accent-line);
+  background: var(--bg-2);
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 620;
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.shead__title-skeleton {
+  width: 160px;
+  height: 12px;
+  border-radius: var(--r-full);
+  background: var(--bg-3);
+}
+.shead__id {
+  flex: none;
+  padding: 3px 6px;
+  border-radius: var(--r-sm);
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+}
+.shead__id:hover {
+  background: var(--bg-3);
+  color: var(--text-0);
+}
+.shead__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: var(--r-full);
+  background: var(--bg-3);
+  color: var(--text-1);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+.shead__pill svg {
+  width: 13px;
+  height: 13px;
+}
+.shead__pill--temp {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--text-0);
+}
+.shead__chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* Shrinks once the title is at its floor. The clip is a safety net: the container queries below hide the chips
+     before they would need it, so nothing ever slides under the buttons beside the header. */
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: 4px;
+  overflow: clip;
+  overflow-clip-margin: 4px;
+}
+/* The model chip keeps its icon, a few characters and the caret; the memory chip keeps its icon. The session ID and
+   the Private/Temporary pill sit in tooltip anchors, which must not shrink below them either. */
+.shead__chips > .schip {
+  min-width: 96px;
+}
+.shead > .tooltip-anchor,
+.shead__chips > .tooltip-anchor {
+  flex: none;
+}
+.schip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 220px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--line-strong);
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out);
+}
+.schip:hover,
+.schip[aria-expanded='true'] {
+  background: var(--bg-3);
+  color: var(--text-0);
+}
+.schip svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.85;
+}
+.schip__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.schip__caret {
+  opacity: 0.6;
+  margin-right: -3px;
+}
+.schip__cloud {
+  color: var(--warning);
+}
+.schip.is-set {
+  border-color: var(--accent-line);
+}
+.schip--off {
+  color: var(--text-2);
+  border-style: dashed;
+}
+.schip--on svg {
+  color: var(--accent-ink);
+}
+.schip--warn {
+  border-color: color-mix(in srgb, var(--warning) 50%, transparent);
+}
+.schip--warn svg {
+  color: var(--warning);
+}
+
+/* Narrower headers (the owner's 1138 px monitor with the side panel open, a half-screen window): the memory chip
+   goes icon-only first (its tooltip and label still say what it is), then the session ID, then the model chip narrows
+   (icon, the start of the name and the caret; the full name is its tooltip); only then do the chips leave. A chat with
+   a Private/Temporary pill needs more room: its steps come earlier, and the pill goes icon-only before the chips leave. */
+@container shead (max-width: 600px) {
+  .schip--mem .schip__text {
+    display: none;
+  }
+  .schip {
+    max-width: 180px;
+  }
+}
+@container shead (max-width: 440px) {
+  .shead > .tooltip-anchor:has(> .shead__id) {
+    display: none;
+  }
+  .schip {
+    max-width: 150px;
+  }
+}
+@container shead (max-width: 290px) {
+  .shead__chips {
+    display: none;
+  }
+}
+@container shead (max-width: 700px) {
+  .shead:has(.shead__pill) .schip--mem .schip__text {
+    display: none;
+  }
+}
+@container shead (max-width: 540px) {
+  .shead:has(.shead__pill) > .tooltip-anchor:has(> .shead__id) {
+    display: none;
+  }
+}
+@container shead (max-width: 380px) {
+  /* The pill keeps its icon (its label and tooltip still say Private/Temporary) so the model chip can stay. */
+  .shead__pill {
+    gap: 0;
+    padding: 0 6px;
+    font-size: 0;
+  }
+}
+@container shead (max-width: 310px) {
+  .shead:has(.shead__pill) .shead__chips {
+    display: none;
+  }
+}
+
+/* Model picker popover */
+.spicker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.spicker__note {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+
+/* ── session panel column ─────────────────────────────────────────────────────────────────── */
+.shell__panel {
+  width: var(--panel-w);
+  min-height: 0;
+  background: var(--bg-1);
+  border-left: 1px solid var(--line);
+}
+.shell__panel:not([data-open]) {
+  display: none;
+}
+.shell__panel-fallback {
+  height: 100%;
+}
+/* Medium windows (a half-screen browser): the panel floats over the chat instead of squeezing it to a sliver. */
+@media (min-width: 720px) and (max-width: 999.98px) {
+  .shell--wide .shell__panel[data-open] {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-sheet);
+    box-shadow: var(--shadow-2);
+    animation: sheet-in-end var(--dur-2) var(--ease-out);
+  }
+  .shell--wide.has-panel .shell__topbar {
+    padding-right: calc(8px + var(--caption-w));
+  }
+}
+
+/* ── phones: edge sheets (07 D8) ──────────────────────────────────────────────────────────── */
+.shell--phone {
+  grid-template-columns: minmax(0, 1fr);
+}
+.shell--phone .shell__main {
+  grid-column: 1;
+  grid-row: 1;
+}
+.shell--phone .shell__topbar {
+  height: calc(var(--bar-h) + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+  padding-left: max(6px, env(safe-area-inset-left));
+  padding-right: max(6px, env(safe-area-inset-right));
+  gap: 2px;
+}
+.shell--phone .shead {
+  gap: 6px;
+  padding-left: 0;
+}
+.shell--phone .shead__title {
+  font-size: var(--fs-lg);
+}
+
+.edge-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+}
+.edge-sheet__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  animation: shell-fade var(--dur-2) var(--ease-out);
+}
+.edge-sheet__panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(88vw, 360px);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--bg-1);
+  box-shadow: var(--shadow-2);
+  outline: none;
+  touch-action: pan-y;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+.edge-sheet--start .edge-sheet__panel {
+  left: 0;
+  padding-left: env(safe-area-inset-left);
+  border-right: 1px solid var(--line);
+  animation: sheet-in-start var(--dur-3) var(--ease-out);
+}
+.edge-sheet--end .edge-sheet__panel {
+  right: 0;
+  padding-right: env(safe-area-inset-right);
+  border-left: 1px solid var(--line);
+  animation: sheet-in-end var(--dur-3) var(--ease-out);
+}
+.edge-sheet.is-closing .edge-sheet__scrim {
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+.edge-sheet--start.is-closing .edge-sheet__panel {
+  transform: translateX(-104%);
+  transition: transform var(--dur-3) var(--ease-out);
+}
+.edge-sheet--end.is-closing .edge-sheet__panel {
+  transform: translateX(104%);
+  transition: transform var(--dur-3) var(--ease-out);
+}
+.edge-sheet__panel > * {
+  flex: 1;
+  min-height: 0;
+}
+
+@keyframes sheet-in-start {
+  from {
+    transform: translateX(-104%);
+  }
+}
+@keyframes sheet-in-end {
+  from {
+    transform: translateX(104%);
+  }
+}
+@keyframes shell-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The reconnect banner centres on the main column, not the window, when the sidebar is showing. */
+.shell.has-sidebar ~ .conn-banner-live {
+  left: calc(50% + var(--sidebar-w) / 2);
+}
+.shell.has-sidebar.has-panel ~ .conn-banner-live {
+  left: calc(50% + (var(--sidebar-w) - var(--panel-w)) / 2);
+}
+
+/* ── boot / bare pages ────────────────────────────────────────────────────────────────────── */
+.app-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 100%;
+  height: 100dvh;
+  padding: 24px;
+  color: var(--text-1);
+  text-align: center;
+}
+.app-center__title {
+  color: var(--text-0);
+  font-size: var(--fs-xl);
+  font-weight: 620;
+}
+.app-bare {
+  height: 100%;
+  height: 100dvh;
+  overflow: auto;
+}
+.app-bare__drag {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: var(--caption-w);
+  height: var(--bar-h);
+  z-index: 1;
+}
+.page-fallback {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  min-height: 160px;
+  color: var(--text-2);
+}

@@ -1,0 +1,122 @@
+/* Top right, under the top bar (fix5-ui P03/P06): never over the composer's Send/Stop/mic at the bottom of a chat, and
+   the same corner on every page. Phones: full width just below the top bar, which stays usable. */
+.toast-region {
+  position: fixed;
+  z-index: var(--z-toast);
+  /* --conn-h: the "Connection lost" strip (or pill) under the top bar while it shows (ConnectionBanner), so a toast
+     never covers it or its Retry button (fix5-ui P03). */
+  top: calc(var(--bar-h) + var(--conn-h, 0px) + env(safe-area-inset-top) + 10px);
+  right: max(16px, env(safe-area-inset-right));
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+.toast-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* icon | text | close on the first row; an action sits under the text (P07), so the text keeps the full width. */
+.toast {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 10px;
+  padding: 10px 8px 10px 12px;
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  color: var(--text-0);
+  pointer-events: auto;
+  animation: toast-in var(--dur-2) var(--ease-out);
+}
+.toast__icon {
+  grid-column: 1;
+  grid-row: 1;
+  display: inline-flex;
+  padding-top: 1px;
+}
+.toast__icon svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.75;
+}
+.toast--info .toast__icon {
+  color: var(--accent-ink);
+}
+.toast--success .toast__icon {
+  color: var(--success);
+}
+.toast--warning .toast__icon {
+  color: var(--warning);
+}
+.toast--error .toast__icon {
+  color: var(--danger);
+}
+.toast__body {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  font-size: var(--fs-md);
+  line-height: 1.4;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.toast__title {
+  font-weight: 620;
+}
+.toast__text {
+  color: var(--text-1);
+}
+.toast__title + .toast__text {
+  margin-top: 2px;
+}
+.toast__action {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: start;
+  min-height: 28px;
+  margin: 4px 0 -2px -10px;
+  padding: 0 10px;
+  border-radius: var(--r-sm);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.toast__action:hover {
+  background: var(--accent-soft);
+}
+.toast__close {
+  grid-column: 3;
+  grid-row: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max(26px, var(--target));
+  height: max(26px, var(--target));
+  margin: -4px 0;
+  border-radius: var(--r-sm);
+  color: var(--text-2);
+}
+.toast__close:hover {
+  color: var(--text-0);
+  background: var(--bg-3);
+}
+.toast__close svg {
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 719.98px) {
+  .toast-region {
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    top: calc(var(--bar-h) + var(--conn-h, 0px) + env(safe-area-inset-top) + 8px);
+    width: auto;
+  }
+}

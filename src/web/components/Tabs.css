@@ -1,0 +1,126 @@
+.tabs {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.tabs__list {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  isolation: isolate;
+}
+.tabs__list::-webkit-scrollbar {
+  display: none;
+}
+.tabs__tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  min-height: max(36px, var(--target));
+  padding: 0 12px;
+  border-radius: var(--r-sm);
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  font-weight: 520;
+  white-space: nowrap;
+  transition: color var(--dur-1) var(--ease-out);
+}
+.tabs__tab:hover:not(:disabled) {
+  color: var(--text-0);
+}
+.tabs__tab.is-selected {
+  color: var(--text-0);
+}
+.tabs__tab:disabled {
+  opacity: 0.4;
+}
+.tabs__tab:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.tabs__icon {
+  display: inline-flex;
+}
+.tabs__icon svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.75;
+}
+.tabs__tab.is-selected .tabs__icon {
+  color: var(--accent-ink);
+}
+.tabs__badge {
+  display: inline-flex;
+  align-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--r-full);
+  background: var(--bg-3);
+  color: var(--text-1);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  justify-content: center;
+}
+
+.tabs__indicator {
+  position: absolute;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dur-2) var(--ease-out),
+    width var(--dur-2) var(--ease-out);
+}
+
+/* line: hairline under the list, accent bar under the selected tab */
+.tabs--line .tabs__list {
+  border-bottom: 1px solid var(--line);
+}
+.tabs--line .tabs__indicator {
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* pill: a quiet track with a raised selected pill */
+.tabs--pill .tabs__list {
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 3px;
+  border-radius: var(--r-md);
+  background: var(--bg-3);
+}
+.tabs--pill .tabs__tab {
+  min-height: max(30px, calc(var(--target) - 6px));
+}
+.tabs--pill .tabs__indicator {
+  z-index: -1;
+  top: 3px;
+  border-radius: var(--r-sm);
+  background: var(--bg-1);
+  box-shadow: var(--shadow-1), inset 0 0 0 1px var(--line-strong);
+}
+:root[data-theme='light'] .tabs--pill .tabs__indicator {
+  background: var(--bg-2);
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] .tabs--pill .tabs__indicator {
+    background: var(--bg-2);
+  }
+}
+
+.tabs__panel {
+  padding-top: 16px;
+  min-width: 0;
+}
+.tabs__panel:focus-visible {
+  box-shadow: none;
+  outline: 2px solid var(--accent-line);
+  outline-offset: 4px;
+}

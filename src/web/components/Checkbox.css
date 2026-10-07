@@ -1,0 +1,100 @@
+.checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: var(--target);
+  padding: 2px 0;
+  cursor: pointer;
+  user-select: none;
+}
+.checkbox--bare {
+  min-height: 0;
+  padding: 0;
+}
+.checkbox.is-disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+.checkbox__box {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+.checkbox__input {
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  inset: 0;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border-radius: 5px;
+  border: 1.5px solid var(--text-2);
+  background: var(--bg-3);
+  cursor: inherit;
+  transition:
+    background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
+}
+.checkbox:hover .checkbox__input:not(:disabled) {
+  border-color: var(--text-1);
+}
+.checkbox__input:checked,
+.checkbox__input:indeterminate {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.checkbox__input:focus-visible {
+  border-radius: 5px;
+}
+.checkbox__mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--on-accent);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+.checkbox__mark svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 3;
+}
+.checkbox__input:checked + .checkbox__mark,
+.checkbox__input:indeterminate + .checkbox__mark {
+  opacity: 1;
+  transform: none;
+}
+.checkbox__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.checkbox__label {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  line-height: 1.4;
+}
+.checkbox__desc {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+@media (forced-colors: active) {
+  .checkbox__input {
+    appearance: auto;
+    -webkit-appearance: auto;
+  }
+  .checkbox__mark {
+    display: none;
+  }
+}

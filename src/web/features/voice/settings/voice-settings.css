@@ -1,0 +1,410 @@
+/* Settings → Voice out / Voice in and wizard steps 4–5 (04 tokens; persistent surfaces are opaque, 07 D10). */
+.vs-page {
+  display: flex;
+  flex-direction: column;
+  max-width: 720px;
+  padding-bottom: 48px;
+}
+.vs-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.vs-head__title {
+  color: var(--text-0);
+  font-size: var(--fs-xl);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.vs-head__lead {
+  margin-top: 4px;
+  max-width: 60ch;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
+.vs-master {
+  padding: 14px 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.vs-page > .callout {
+  margin-top: 12px;
+}
+/* Sections read like every other Settings page (fix5-ui P09): the SettingsGroup header (title, muted line) over a
+   card that holds the controls; no hairlines between sections. Nested cards (models, tests) sit inset on --bg-1. */
+.vs-section {
+  display: grid;
+  gap: 10px;
+  padding-top: 28px;
+}
+.vs-section__head {
+  padding: 0 2px;
+}
+.vs-section__title {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+.vs-section__desc {
+  margin-top: 2px;
+  max-width: 64ch;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.vs-section > .vs-section__body {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-2);
+}
+.vs-section > .vs-section__body .vs-card {
+  background: var(--bg-1);
+}
+.vs-section__body,
+.vs-stack {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.vs-grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+}
+.vs-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+.vs-row__grow {
+  flex: 1;
+  min-width: 0;
+}
+.vs-row__actions {
+  display: flex;
+  gap: 4px;
+  /* Line up with the input under the label row. */
+  padding-top: 25px;
+}
+.vs-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+}
+.vs-seg {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  min-width: 0;
+}
+.vs-seg > .segmented {
+  max-width: 100%;
+}
+.vs-seg .field-hint {
+  max-width: 62ch;
+}
+/* Voice tones (H-v11-tone): three segments that must fit a phone — they share the row and wrap their words. */
+.vs-tone .vs-tone__support {
+  max-width: 62ch;
+}
+.vs-tone .vs-tone__support.is-unsupported {
+  color: var(--warning-ink, var(--text-2));
+}
+@media (max-width: 520px) {
+  .vs-tone .vs-seg > .segmented {
+    display: flex;
+    width: 100%;
+  }
+  .vs-tone .vs-seg .segmented__item {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 4px 8px;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+  }
+}
+.vs-sample {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.vs-sample__hint,
+.vs-note {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.vs-privacy__verified {
+  color: var(--text-2);
+}
+.vs-section--advanced {
+  padding-top: 20px;
+}
+.vs-section--advanced .vs-section__head {
+  display: none;
+}
+/* "More options" is its own disclosure card. */
+.vs-section--advanced > .vs-section__body {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* ── Voice in: model list ─────────────────────────────────────────────────────────────────────── */
+.vs-models {
+  display: grid;
+  gap: 8px;
+}
+.vs-model {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 16px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.vs-model.is-active {
+  border-color: var(--accent-line);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-2));
+}
+.vs-model__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  color: var(--text-0);
+  font-weight: 600;
+}
+.vs-model__desc {
+  margin-top: 3px;
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.vs-model__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 6px;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+.vs-model__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.vs-model__progress,
+.vs-model__error {
+  grid-column: 1 / -1;
+}
+.vs-model__error {
+  color: var(--danger);
+  font-size: var(--fs-sm);
+}
+
+/* ── Voice in: try-it, level meter, echo test ─────────────────────────────────────────────────── */
+.vs-tryit {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: var(--r-lg);
+  border: 1px dashed var(--line-strong);
+  background: var(--bg-1);
+}
+.vs-tryit__text {
+  min-width: 0;
+}
+.vs-tryit__title {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+.vs-tryit__out {
+  margin-top: 3px;
+  min-height: 1.5em;
+  color: var(--text-2);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.vs-tryit__out.is-live {
+  color: var(--text-1);
+}
+.vs-tryit__out.is-final {
+  color: var(--text-0);
+}
+.vs-tryit__count {
+  color: var(--accent-ink);
+  font-variant-numeric: tabular-nums;
+}
+.vs-meter {
+  display: grid;
+  gap: 6px;
+}
+.vs-meter__bar {
+  position: relative;
+  height: 10px;
+  border-radius: var(--r-full);
+  background: var(--bg-3);
+  overflow: hidden;
+}
+.vs-meter__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--success), var(--accent) 72%, var(--warning));
+  transform-origin: left center;
+  transform: scaleX(var(--lvl, 0));
+  transition: transform 60ms linear;
+}
+.vs-meter__label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+.vs-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.vs-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+.vs-card__title {
+  color: var(--text-0);
+  font-weight: 600;
+}
+.vs-card__desc {
+  margin-top: 2px;
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  max-width: 60ch;
+}
+.vs-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.vs-result svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+.vs-result.is-ok svg {
+  color: var(--success);
+}
+.vs-result.is-bad svg {
+  color: var(--warning);
+}
+.vs-result span {
+  color: var(--text-1);
+}
+
+/* ── Wizard steps ─────────────────────────────────────────────────────────────────────────────── */
+.vw {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: min(100%, 640px);
+  text-align: left;
+}
+.vw__head {
+  display: grid;
+  gap: 6px;
+}
+.vw__eyebrow {
+  color: var(--accent-ink);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.vw__title {
+  color: var(--text-0);
+  font-size: var(--fs-2xl);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+.vw__lead {
+  max-width: 58ch;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
+.vw__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.vw__nav-spacer {
+  flex: 1;
+}
+
+@media (max-width: 719.98px) {
+  .vs-grid2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .vs-model {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .vs-model__actions {
+    justify-content: flex-start;
+  }
+  .vs-head__title {
+    font-size: var(--fs-lg);
+  }
+  .vw__title {
+    font-size: var(--fs-xl);
+  }
+  .vw__nav-spacer {
+    display: none;
+  }
+  .vw__nav > * {
+    flex: 1 1 auto;
+  }
+}
+:root[data-reduce-motion='true'] .vs-meter__fill {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vs-meter__fill {
+    transition: none;
+  }
+}
+.vs-inline-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  vertical-align: -2px;
+}

@@ -1,0 +1,675 @@
+/* Setup wizard (07 D11). A clear night sky behind everything; the rail and nav are persistent, so opaque (07 D10). */
+
+.wiz {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  height: 100%;
+  min-height: 100%;
+  background: var(--bg-0);
+  isolation: isolate;
+  overflow: hidden;
+}
+.wiz--rail {
+  grid-template-columns: 296px minmax(0, 1fr);
+}
+
+/* the sky: an accent dusk glow and a few fixed stars (static; no animation cost) */
+.wiz__sky {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 55% at 60% -8%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%),
+    radial-gradient(40% 40% at 8% 105%, color-mix(in srgb, #7c5cff 9%, transparent), transparent 70%),
+    radial-gradient(1px 1px at 12% 22%, color-mix(in srgb, var(--text-0) 55%, transparent), transparent 2px),
+    radial-gradient(1px 1px at 78% 14%, color-mix(in srgb, var(--text-0) 45%, transparent), transparent 2px),
+    radial-gradient(1.5px 1.5px at 88% 46%, color-mix(in srgb, var(--text-0) 40%, transparent), transparent 2px),
+    radial-gradient(1px 1px at 34% 8%, color-mix(in srgb, var(--text-0) 35%, transparent), transparent 2px),
+    radial-gradient(1px 1px at 62% 30%, color-mix(in srgb, var(--text-0) 30%, transparent), transparent 2px),
+    radial-gradient(1px 1px at 22% 62%, color-mix(in srgb, var(--text-0) 25%, transparent), transparent 2px),
+    radial-gradient(1.5px 1.5px at 94% 78%, color-mix(in srgb, var(--text-0) 30%, transparent), transparent 2px);
+}
+:root[data-theme='light'] .wiz__sky {
+  opacity: 0.7;
+}
+
+/* ── rail ────────────────────────────────────────────────────────────────────────────────────── */
+.wiz__rail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: calc(var(--bar-h) + 8px) 18px 18px;
+  background: var(--surface-over);
+  border-right: 1px solid var(--line);
+}
+.wiz__rail-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px;
+}
+.wiz__rail-title {
+  color: var(--text-0);
+  font-weight: 620;
+  font-size: var(--fs-lg);
+}
+.wiz__rail-sub {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.wiz__dl {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--accent-ink);
+}
+.wiz__dl svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2;
+}
+
+.wiz__steps {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.wiz__step {
+  position: relative;
+}
+/* the connector between dots */
+.wiz__step + .wiz__step::before {
+  content: '';
+  position: absolute;
+  left: 21px;
+  top: -10px;
+  height: 20px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--line-strong);
+}
+.wiz__step--done + .wiz__step::before,
+.wiz__step--skipped + .wiz__step::before {
+  background: var(--accent-line);
+}
+.wiz__step-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 6px 8px;
+  border-radius: var(--r-md);
+  text-align: left;
+}
+button.wiz__step-btn:hover {
+  background: var(--bg-3);
+}
+.wiz__dot {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-3);
+  color: var(--text-2);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+.wiz__dot svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+.wiz__dot--current {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+.wiz__dot--done {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+}
+.wiz__dot--skipped {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  border: 1.5px dashed var(--text-2);
+}
+.wiz__step-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.wiz__step-title {
+  color: var(--text-1);
+  font-weight: 500;
+}
+.wiz__step--current .wiz__step-title {
+  color: var(--text-0);
+  font-weight: 600;
+}
+.wiz__step--todo .wiz__step-title {
+  color: var(--text-2);
+}
+.wiz__step-hint {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wiz__later-btn {
+  align-self: flex-start;
+}
+
+/* ── main column ─────────────────────────────────────────────────────────────────────────────── */
+.wiz__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: calc(var(--bar-h) + 8px) 32px 0;
+  scroll-padding-bottom: 96px;
+}
+.wiz__main > * {
+  width: min(100%, 760px);
+  margin-left: auto;
+  margin-right: auto;
+}
+.wiz__progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.wiz--rail .wiz__progress-text {
+  display: none;
+}
+.wiz__progress-track {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg-3);
+  overflow: hidden;
+}
+.wiz__progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: width var(--dur-3) var(--ease-out);
+}
+
+.wiz__card {
+  flex: 1 0 auto;
+  padding-bottom: 28px;
+}
+.wiz-in-forward {
+  animation: wiz-in-forward var(--dur-3) var(--ease-out);
+}
+.wiz-in-back {
+  animation: wiz-in-back var(--dur-3) var(--ease-out);
+}
+@keyframes wiz-in-forward {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+}
+@keyframes wiz-in-back {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+}
+
+.wiz__nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 16px 0 max(18px, env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--bg-0) 0%, transparent), var(--bg-0) 18px);
+}
+.wiz__nav-left,
+.wiz__nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wiz__nav-right {
+  margin-left: auto;
+}
+.wiz__blocked {
+  flex-basis: 100%;
+  text-align: right;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.wiz__later {
+  padding-bottom: 18px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  text-align: right;
+}
+
+/* ── step content ────────────────────────────────────────────────────────────────────────────── */
+.wiz-step {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.wiz-step__head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+/* "Memory · optional" — the same eyebrow as the voice steps (.vw__eyebrow). */
+.wiz-step__eyebrow {
+  color: var(--accent-ink);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.wiz-step__title {
+  font-size: var(--fs-2xl);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--text-0);
+}
+.wiz-step__title:focus-visible {
+  box-shadow: none;
+}
+.wiz-step__lead {
+  color: var(--text-1);
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  max-width: 60ch;
+}
+.wiz-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-2);
+  overflow: hidden;
+  animation: wiz-in-forward var(--dur-3) var(--ease-out);
+}
+.wiz-panel__anyway {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.wiz-list {
+  display: grid;
+  gap: 8px;
+  list-style: disc;
+  padding-left: 18px;
+  color: var(--text-1);
+}
+.wiz-list strong {
+  color: var(--text-0);
+  font-weight: 600;
+}
+
+/* ── welcome ─────────────────────────────────────────────────────────────────────────────────── */
+.wiz__card--welcome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wiz-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: min(100%, 640px);
+  padding: 8px 0 32px;
+  text-align: center;
+}
+.wiz-welcome__star {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin-bottom: 4px;
+}
+.wiz-welcome__star::before {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 18%, transparent), transparent);
+  z-index: -1;
+}
+.wiz-welcome__title {
+  font-size: 34px;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--text-0);
+}
+.wiz-welcome__title:focus-visible {
+  box-shadow: none;
+}
+.wiz-welcome__lead {
+  color: var(--text-1);
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  max-width: 46ch;
+}
+.wiz-welcome__privacy {
+  width: 100%;
+  padding: 14px 16px 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-2);
+  text-align: left;
+  color: var(--text-1);
+}
+.wiz-welcome__more {
+  margin: 4px -6px 0;
+}
+.wiz-welcome__paths {
+  width: 100%;
+  text-align: left;
+}
+.wiz-welcome__paths .radio-group__legend {
+  width: 100%;
+  text-align: center;
+  font-size: var(--fs-md);
+  margin-bottom: 10px;
+}
+.wiz-welcome__go {
+  min-width: 240px;
+}
+
+/* ── summary ─────────────────────────────────────────────────────────────────────────────────── */
+.wiz-summary {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-2);
+  overflow: hidden;
+}
+.wiz-summary__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 12px 12px 16px;
+}
+.wiz-summary__row + .wiz-summary__row {
+  border-top: 1px solid var(--line);
+}
+.wiz-summary__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-md);
+  background: var(--bg-3);
+  color: var(--text-1);
+}
+.wiz-summary__row--ok .wiz-summary__icon {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.wiz-summary__icon svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.75;
+}
+.wiz-summary__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.wiz-summary__title {
+  color: var(--text-0);
+  font-weight: 560;
+}
+.wiz-summary__value {
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
+}
+.wiz-summary__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.wiz-summary__state svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2;
+}
+.wiz-summary__state--ok {
+  color: var(--success);
+}
+.wiz-summary__state--todo {
+  color: var(--warning);
+}
+
+/* ── finale ──────────────────────────────────────────────────────────────────────────────────── */
+.wiz__card--finale {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wiz-finale {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  width: min(100%, 640px);
+  padding: 24px 0 48px;
+  text-align: center;
+}
+.wiz-finale__star {
+  position: relative;
+  display: grid;
+  place-items: center;
+  transition: transform 900ms var(--ease-out);
+}
+.wiz-finale__star::before {
+  content: '';
+  position: absolute;
+  inset: -55%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 22%, transparent), transparent);
+  z-index: -1;
+  opacity: 0.5;
+  transition: opacity 900ms var(--ease-out);
+}
+.wiz-finale--speaking .wiz-finale__star::before,
+.wiz-finale--done .wiz-finale__star::before {
+  opacity: 1;
+}
+.wiz-finale--waiting .wiz-finale__star {
+  transform: scale(0.94);
+}
+.wiz-finale__greeting {
+  min-height: 3lh;
+  max-width: 32ch;
+  color: var(--text-0);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  --reveal-fg: var(--text-0);
+}
+.wiz-finale__greeting.is-held {
+  color: transparent;
+}
+.wiz-finale--waiting .wiz-word {
+  opacity: 0;
+}
+.wiz-finale--speaking .wiz-word,
+.wiz-finale--done .wiz-word {
+  animation: wiz-word var(--dur-3) var(--ease-out) both;
+  animation-delay: calc(var(--i) * 70ms);
+}
+@keyframes wiz-word {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+.wiz-finale__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  transition:
+    opacity var(--dur-3) var(--ease-out),
+    transform var(--dur-3) var(--ease-out);
+}
+.wiz-finale__note {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  max-width: 44ch;
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+.wiz-finale:not(.wiz-finale--done) .wiz-finale__actions {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.wiz-finale:not(.wiz-finale--done) .wiz-finale__note {
+  opacity: 0;
+}
+
+/* ── remote clients ──────────────────────────────────────────────────────────────────────────── */
+.wiz--remote {
+  place-items: center;
+  padding: calc(var(--bar-h) + 16px) 16px max(24px, env(safe-area-inset-bottom));
+  overflow: auto;
+}
+.wiz-remote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 440px);
+  padding: 32px 28px;
+  border-radius: var(--r-xl);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  box-shadow: var(--shadow-2);
+  text-align: center;
+}
+.wiz-remote__title {
+  font-size: var(--fs-xl);
+  font-weight: 640;
+}
+.wiz-remote__text {
+  color: var(--text-1);
+}
+
+/* ── narrow windows and phones ───────────────────────────────────────────────────────────────── */
+@media (max-width: 959.98px) {
+  .wiz--rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wiz__rail {
+    display: none;
+  }
+  .wiz--rail .wiz__progress-text {
+    display: inline;
+  }
+}
+@media (max-width: 719.98px) {
+  .wiz__main {
+    padding: calc(var(--bar-h) + 4px) 16px 0;
+  }
+  .wiz-step__title {
+    font-size: var(--fs-xl);
+  }
+  .wiz-step__lead {
+    font-size: var(--fs-md);
+  }
+  .wiz-welcome__title {
+    font-size: 26px;
+  }
+  .wiz__nav-right {
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-end;
+  }
+  .wiz__nav-right .btn--primary {
+    flex: 1;
+    max-width: 240px;
+  }
+  .wiz-summary__row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    row-gap: 2px;
+    padding: 12px 8px 12px 14px;
+  }
+  .wiz-summary__state {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .wiz-summary__row > .btn {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .wiz-finale__greeting {
+    font-size: 19px;
+  }
+}
+
+/* Short windows (the owner's 1138×608 monitor): the Welcome and the finale fit without scrolling. */
+@media (max-height: 760px) {
+  .wiz-welcome {
+    gap: 12px;
+    padding: 0 0 20px;
+  }
+  .wiz-welcome__title {
+    font-size: 28px;
+  }
+  .wiz-welcome__lead {
+    font-size: var(--fs-md);
+  }
+  .wiz-welcome__privacy {
+    padding: 10px 14px 4px;
+    font-size: var(--fs-sm);
+  }
+  .wiz-welcome__paths .radio-card {
+    padding: 10px 14px;
+  }
+  .wiz-finale {
+    gap: 16px;
+    padding: 8px 0 24px;
+  }
+  .wiz-step__title {
+    font-size: var(--fs-xl);
+  }
+  .wiz-step {
+    gap: 14px;
+  }
+}

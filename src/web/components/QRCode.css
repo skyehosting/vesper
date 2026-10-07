@@ -1,0 +1,26 @@
+.qr {
+  margin: 0;
+}
+.qr__plate {
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-lg);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px var(--line-strong),
+    var(--shadow-1);
+}
+.qr__plate img {
+  display: block;
+  image-rendering: pixelated;
+  user-select: none;
+}
+.qr__plate .skeleton {
+  background: #eceaf3;
+}
+.qr__failed {
+  padding: 16px;
+  color: #45405a;
+  font-size: var(--fs-sm);
+  text-align: center;
+}

@@ -1,0 +1,117 @@
+.file-drop-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.file-drop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 16px;
+  border-radius: var(--r-lg);
+  border: 1.5px dashed var(--line-strong);
+  background: var(--bg-2);
+  text-align: center;
+  transition:
+    border-color var(--dur-1) var(--ease-out),
+    background-color var(--dur-1) var(--ease-out);
+}
+.file-drop:focus-within {
+  border-color: var(--accent-line);
+}
+.file-drop.is-dragging {
+  border-color: var(--accent);
+  border-style: solid;
+  background: var(--accent-soft);
+}
+.file-drop.is-disabled {
+  opacity: 0.5;
+}
+.file-drop__icon {
+  width: 22px;
+  height: 22px;
+  color: var(--text-2);
+  stroke-width: 1.6;
+}
+.file-drop.is-dragging .file-drop__icon {
+  color: var(--accent-ink);
+}
+.file-drop__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.file-drop__label {
+  color: var(--text-0);
+  font-weight: 540;
+}
+.file-drop__hint {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.file-drop__browse {
+  min-height: max(30px, var(--target));
+  padding: 0 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-strong);
+  background: var(--bg-3);
+  color: var(--text-0);
+  font-size: var(--fs-sm);
+  font-weight: 550;
+}
+.file-drop__browse:hover:not(:disabled) {
+  background: var(--bg-4);
+}
+.file-drop--compact {
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 10px 12px;
+  text-align: left;
+}
+.file-drop--compact .file-drop__text {
+  flex: 1;
+  min-width: 0;
+}
+.file-drop__errors {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--danger);
+  font-size: var(--fs-sm);
+}
+
+.drop-overlay {
+  position: absolute;
+  inset: 8px;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-xl);
+  border: 2px dashed var(--accent);
+  background: color-mix(in srgb, var(--bg-0) 72%, transparent);
+  pointer-events: none;
+  animation: drop-in var(--dur-1) var(--ease-out);
+}
+.drop-overlay__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-0);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+.drop-overlay__inner svg {
+  width: 32px;
+  height: 32px;
+  color: var(--accent-ink);
+  stroke-width: 1.6;
+}
+@keyframes drop-in {
+  from {
+    opacity: 0;
+  }
+}

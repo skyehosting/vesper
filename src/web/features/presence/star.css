@@ -1,0 +1,31 @@
+/* <Star> slots (07 D5): a target the one presence surface moves into; the static glyph shows until it arrives. */
+.star-slot {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  isolation: isolate;
+}
+.star-slot__fallback {
+  display: grid;
+  place-items: center;
+  opacity: 0.9;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+/* The live surface is here: hide the placeholder glyph under it. */
+.star-slot[data-star-live] > .star-slot__fallback {
+  opacity: 0;
+}
+
+/*
+ * Presence stage tokens: the Star and the Constellation always sit on night (04 Themes — "a night window" in the
+ * light theme), so their backdrop and the text drawn straight on it are fixed, not theme colours.
+ */
+:root {
+  --star-night-0: #07070f;
+  --star-night-1: #0e0e22;
+  --star-night-2: #191634;
+  --star-night-text: #ece9f8;
+  --star-night-text-2: #b3aecb;
+  --star-night-line: rgba(236, 233, 248, 0.14);
+}

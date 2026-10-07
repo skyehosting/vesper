@@ -1,0 +1,116 @@
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: var(--target);
+}
+.switch-row--start {
+  justify-content: flex-start;
+  gap: 12px;
+}
+.switch-row--bare {
+  display: inline-flex;
+  min-height: 0;
+}
+.switch-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.switch-row__label {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+.switch-row__desc {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+.switch-row.is-disabled .switch-row__label {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.switch {
+  --sw-w: 36px;
+  --sw-h: 20px;
+  --sw-pad: 2px;
+  position: relative;
+  flex: none;
+  width: var(--sw-w);
+  height: var(--sw-h);
+  border-radius: var(--r-full);
+  background: var(--bg-4);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+/* A 44 px hit area on touch without changing the look (07 D8). */
+.switch::before {
+  content: '';
+  position: absolute;
+  inset: calc((var(--sw-h) - max(var(--sw-h), var(--target))) / 2) calc((var(--sw-w) - max(var(--sw-w), var(--target))) / 2);
+}
+.switch--sm {
+  --sw-w: 30px;
+  --sw-h: 17px;
+}
+.switch__thumb {
+  position: absolute;
+  top: var(--sw-pad);
+  left: var(--sw-pad);
+  width: calc(var(--sw-h) - 2 * var(--sw-pad));
+  height: calc(var(--sw-h) - 2 * var(--sw-pad));
+  border-radius: 50%;
+  background: var(--text-1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  transition:
+    transform var(--dur-2) var(--ease-out),
+    background-color var(--dur-2) var(--ease-out);
+}
+.switch[aria-checked='true'] {
+  background: var(--accent);
+  box-shadow: none;
+}
+.switch[aria-checked='true'] .switch__thumb {
+  transform: translateX(calc(var(--sw-w) - var(--sw-h)));
+  background: var(--on-accent);
+}
+.switch:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1px var(--text-2);
+}
+.switch[aria-checked='true']:hover:not(:disabled) {
+  background: var(--accent-strong);
+  box-shadow: none;
+}
+.switch:focus-visible {
+  border-radius: var(--r-full);
+}
+.switch:disabled {
+  opacity: 0.45;
+}
+:root[data-theme='light'] .switch__thumb {
+  background: #fff;
+}
+:root[data-theme='light'] .switch[aria-checked='true'] .switch__thumb {
+  background: #fff;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] .switch__thumb {
+    background: #fff;
+  }
+}
+@media (forced-colors: active) {
+  .switch {
+    border: 1px solid CanvasText;
+  }
+  .switch__thumb {
+    background: CanvasText;
+  }
+}

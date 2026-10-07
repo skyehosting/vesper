@@ -1,0 +1,248 @@
+/* Sign-in, pairing and waiting screens (access-ui). Phone-first (07 D8): full-width card, 44 px targets, safe areas. */
+.login {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: calc(var(--bar-h) + 12px) max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: var(--bg-0);
+  color: var(--text-0);
+}
+
+/* A night sky just after sunset: one warm glow above, a cool horizon below, a few faint stars. */
+.login__sky {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(56% 42% at 50% -4%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 72%),
+    radial-gradient(80% 50% at 50% 112%, color-mix(in srgb, #6d5bd0 14%, transparent), transparent 70%);
+}
+.login__sky::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, var(--text-1), transparent 60%),
+    radial-gradient(1px 1px at 26% 68%, var(--text-2), transparent 60%),
+    radial-gradient(1.5px 1.5px at 41% 14%, var(--text-1), transparent 60%),
+    radial-gradient(1px 1px at 63% 31%, var(--text-2), transparent 60%),
+    radial-gradient(1.5px 1.5px at 78% 12%, var(--text-1), transparent 60%),
+    radial-gradient(1px 1px at 88% 58%, var(--text-2), transparent 60%),
+    radial-gradient(1px 1px at 7% 84%, var(--text-2), transparent 60%),
+    radial-gradient(1px 1px at 93% 86%, var(--text-1), transparent 60%);
+}
+:root[data-theme='light'] .login__sky::before {
+  opacity: 0;
+}
+
+.login__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 400px);
+  padding: 32px 28px 28px;
+  border-radius: var(--r-xl);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-2);
+}
+
+.login__mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 2px;
+}
+.login__mark--waiting::before,
+.login__mark--waiting::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  animation: login-ring 2.6s var(--ease-out) infinite;
+}
+.login__mark--waiting::after {
+  animation-delay: 1.3s;
+}
+@keyframes login-ring {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+:root[data-reduce-motion='true'] .login__mark--waiting::before,
+:root[data-reduce-motion='true'] .login__mark--waiting::after {
+  animation: none;
+  opacity: 0.5;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .login__mark--waiting::before,
+  .login__mark--waiting::after {
+    animation: none;
+    opacity: 0.5;
+    transform: none;
+  }
+}
+
+.login__badge {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.login__badge svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 1.75;
+}
+.login__badge--danger {
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  color: var(--danger);
+}
+
+.login__title {
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+}
+.login__lead {
+  max-width: 34ch;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.login__form,
+.login__stack,
+.login__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  margin-top: 8px;
+}
+.login__actions {
+  gap: 8px;
+}
+.login__form > .btn:first-of-type {
+  margin-top: 4px;
+}
+.login__hint {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+.login__lock,
+.login__problem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  font-size: var(--fs-md);
+  font-variant-numeric: tabular-nums;
+}
+.login__lock {
+  background: color-mix(in srgb, var(--warning) 12%, transparent);
+  color: var(--text-0);
+}
+.login__problem {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  color: var(--text-0);
+}
+.login__problem svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--danger);
+}
+
+.login__wait {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 6px 0 2px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--bg-3);
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  text-align: center;
+}
+.login__mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-0);
+}
+
+.login__field-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.login__footer {
+  width: min(100%, 400px);
+  margin-top: 16px;
+}
+.login__about {
+  border-radius: var(--r-lg);
+}
+.login__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 18px;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
+.login__facts li::marker {
+  color: var(--accent-ink);
+}
+
+/* Phones: no floating card; the content sits a little above centre, like a native sign-in screen. */
+@media (max-width: 719.98px) {
+  .login {
+    justify-content: flex-start;
+    padding-top: max(calc(env(safe-area-inset-top) + 9vh), 48px);
+  }
+  .login__card {
+    padding: 8px 4px 4px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .login__footer {
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,170 @@
+.callout,
+.banner {
+  --tone: var(--text-2);
+  --tone-ink: var(--text-1);
+}
+.callout--info,
+.banner--info {
+  --tone: #7dd3fc;
+  --tone-ink: #7dd3fc;
+}
+.callout--warning,
+.banner--warning {
+  --tone: var(--warning);
+  --tone-ink: var(--warning);
+}
+.callout--danger,
+.banner--danger {
+  --tone: var(--danger);
+  --tone-ink: var(--danger);
+}
+.callout--success,
+.banner--success {
+  --tone: var(--success);
+  --tone-ink: var(--success);
+}
+.callout--privacy,
+.banner--accent {
+  --tone: var(--accent);
+  --tone-ink: var(--accent-ink);
+}
+:root[data-theme='light'] :is(.callout--info, .banner--info) {
+  --tone: #0b6c99;
+  --tone-ink: #0b6c99;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] :is(.callout--info, .banner--info) {
+    --tone: #0b6c99;
+    --tone-ink: #0b6c99;
+  }
+}
+
+/* ── Callout ─────────────────────────────────────────────────────────────────────────────────── */
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid color-mix(in srgb, var(--tone) 28%, transparent);
+  background: color-mix(in srgb, var(--tone) 7%, var(--bg-2));
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+.callout__icon {
+  display: inline-flex;
+  flex: none;
+  padding-top: 2px;
+  color: var(--tone-ink);
+}
+.callout__icon svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.75;
+}
+.callout__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.callout__title {
+  color: var(--text-0);
+  font-weight: 620;
+}
+.callout__text {
+  text-wrap: pretty;
+}
+.callout__text p + p {
+  margin-top: 6px;
+}
+.callout__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 4px;
+}
+.callout__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--tone-ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.callout__link svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2;
+}
+.callout__link:hover {
+  text-decoration: underline;
+}
+.callout__close,
+.banner__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: max(26px, var(--target));
+  height: max(26px, var(--target));
+  margin: -4px -6px -4px 0;
+  border-radius: var(--r-sm);
+  color: var(--text-2);
+}
+.callout__close:hover,
+.banner__close:hover {
+  background: var(--bg-3);
+  color: var(--text-0);
+}
+.callout__close svg,
+.banner__close svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────────────────────── */
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 12px 6px 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--tone) 30%, transparent);
+  background: color-mix(in srgb, var(--tone) 11%, var(--bg-1));
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  line-height: 1.4;
+}
+.banner__icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--tone-ink);
+}
+.banner__icon svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.75;
+}
+.banner__text {
+  flex: 1;
+  min-width: 0;
+}
+.banner__actions {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+@media (max-width: 479.98px) {
+  .banner {
+    flex-wrap: wrap;
+  }
+  .banner__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

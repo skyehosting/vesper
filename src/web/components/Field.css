@@ -1,0 +1,205 @@
+/* Field chrome + the one input box shared by TextField, TextArea, Select, Combobox and SecretInput. */
+.field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.field-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 18px;
+}
+.field-label {
+  color: var(--text-0);
+  font-size: var(--fs-sm);
+  font-weight: 560;
+  line-height: 1.3;
+}
+.field-required {
+  color: var(--accent-ink);
+}
+.field-hint {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+.field-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--danger);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1.4;
+}
+.field-error svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 1px;
+  stroke-width: 2;
+}
+
+/* ── the input box ───────────────────────────────────────────────────────────────────────────── */
+.input {
+  --input-h: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: max(var(--input-h), var(--target));
+  padding: 0 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-strong);
+  background: var(--bg-3);
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  transition:
+    border-color var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-1) var(--ease-out),
+    background-color var(--dur-1) var(--ease-out);
+}
+.input--sm {
+  --input-h: 30px;
+  padding: 0 10px;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+}
+.input:hover:not(.is-disabled) {
+  border-color: color-mix(in srgb, var(--text-2) 55%, transparent);
+}
+.input:focus-within,
+.input.is-focused {
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.is-invalid .input,
+.input.is-invalid {
+  border-color: color-mix(in srgb, var(--danger) 70%, transparent);
+}
+.is-invalid .input:focus-within,
+.input.is-invalid:focus-within {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 18%, transparent);
+}
+.input.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.input.is-readonly {
+  background: var(--bg-2);
+}
+
+/* The native control fills the box; the box draws the border and focus. */
+.input__control {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  min-height: inherit;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.input__control:focus-visible {
+  box-shadow: none;
+}
+.input__control::placeholder {
+  color: var(--text-2);
+  opacity: 1;
+}
+.input__control:disabled {
+  cursor: not-allowed;
+}
+.input__affix {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  color: var(--text-2);
+}
+.input__affix svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.75;
+}
+.input__affix--end {
+  margin-right: -6px;
+}
+
+/* Native number spinners clash with the look; arrow keys still work. */
+.input__control[type='number']::-webkit-inner-spin-button,
+.input__control[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.field-count {
+  align-self: flex-end;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+.field-count.is-over {
+  color: var(--danger);
+}
+
+/* iOS zooms into inputs under 16 px on focus (07 D8). */
+@media (max-width: 719.98px) {
+  .input,
+  .input--sm {
+    font-size: max(16px, 1em);
+  }
+}
+
+/* ── textarea (the element is its own box) ───────────────────────────────────────────────────── */
+.textarea {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-strong);
+  background: var(--bg-3);
+  color: var(--text-0);
+  font: inherit;
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  resize: none;
+  transition:
+    border-color var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-1) var(--ease-out);
+}
+.textarea.mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.textarea::placeholder {
+  color: var(--text-2);
+}
+.textarea:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--text-2) 55%, transparent);
+}
+.textarea:focus-visible,
+.textarea:focus {
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-radius: var(--r-md);
+}
+.is-invalid .textarea {
+  border-color: color-mix(in srgb, var(--danger) 70%, transparent);
+}
+.textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.textarea[readonly] {
+  background: var(--bg-2);
+}
+@media (max-width: 719.98px) {
+  .textarea {
+    font-size: max(16px, 1em);
+  }
+}

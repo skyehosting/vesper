@@ -1,0 +1,116 @@
+.progress {
+  --tone: var(--accent);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.progress--success {
+  --tone: var(--success);
+}
+.progress--warning {
+  --tone: var(--warning);
+}
+.progress--danger {
+  --tone: var(--danger);
+}
+.progress__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--fs-sm);
+}
+.progress__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-0);
+  font-weight: 540;
+}
+.progress__value {
+  flex: none;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+.progress__track {
+  position: relative;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--bg-4);
+  overflow: hidden;
+}
+.progress--sm .progress__track {
+  height: 4px;
+}
+.progress__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tone);
+  transition: width var(--dur-3) var(--ease-out);
+}
+.progress.is-indeterminate .progress__fill {
+  position: absolute;
+  width: 35%;
+  animation: progress-slide 1.3s var(--ease-out) infinite;
+}
+@keyframes progress-slide {
+  from {
+    left: -35%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+.progress-ring {
+  --tone: var(--accent);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+.progress-ring svg {
+  display: block;
+}
+.progress-ring__track {
+  stroke: var(--bg-4);
+}
+.progress-ring__fill {
+  stroke: var(--tone);
+  transition: stroke-dasharray var(--dur-3) var(--ease-out);
+}
+.progress-ring.is-indeterminate svg {
+  animation: progress-spin 1s linear infinite;
+}
+.progress-ring__value {
+  position: absolute;
+  color: var(--text-1);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Reduced motion: indeterminate bars pulse in place instead of sliding. */
+:root[data-reduce-motion='true'] .progress.is-indeterminate .progress__fill,
+:root[data-reduce-motion='true'] .progress-ring.is-indeterminate svg {
+  animation: none;
+  left: 0;
+  width: 100%;
+  opacity: 0.45;
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress.is-indeterminate .progress__fill,
+  .progress-ring.is-indeterminate svg {
+    animation: none;
+    left: 0;
+    width: 100%;
+    opacity: 0.45;
+  }
+}
+@keyframes progress-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

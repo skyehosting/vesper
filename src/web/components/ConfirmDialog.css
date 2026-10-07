@@ -1,0 +1,10 @@
+.confirm__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.confirm__error {
+  color: var(--danger);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}

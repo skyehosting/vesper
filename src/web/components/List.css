@@ -1,0 +1,124 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.list--inset {
+  padding: 4px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.list--dividers > .list-item + .list-item {
+  border-top: 1px solid var(--line);
+}
+.list--dividers.list--inset > .list-item + .list-item {
+  margin-top: 0;
+}
+
+.list-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  border-radius: var(--r-md);
+}
+.list--dividers > .list-item {
+  border-radius: 0;
+}
+.list-item.is-disabled {
+  opacity: 0.5;
+}
+.list-item__main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  min-height: max(48px, var(--target));
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+a.list-item__main:hover {
+  text-decoration: none;
+}
+.list-item--interactive:hover:not(.is-disabled) {
+  background: var(--bg-3);
+}
+.list-item.is-selected {
+  background: var(--accent-soft);
+}
+.list-item__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  background: var(--bg-3);
+  color: var(--text-1);
+}
+.list-item__icon:has(.avatar) {
+  width: auto;
+  height: auto;
+  background: none;
+}
+.list-item__icon svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.75;
+}
+.list-item.is-selected .list-item__icon {
+  color: var(--accent-ink);
+}
+.list-item__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+.list-item__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 520;
+}
+.list-item__desc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.list-item__meta {
+  flex: none;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+.list-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  padding-right: 6px;
+}
+/* Mouse: actions appear on hover/focus. Touch and keyboard always find them (they stay in the tab order). */
+@media (hover: hover) and (pointer: fine) {
+  .list-item:not(.list-item--actions-visible) .list-item__actions {
+    opacity: 0;
+    transition: opacity var(--dur-1) var(--ease-out);
+  }
+  .list-item:hover .list-item__actions,
+  .list-item:focus-within .list-item__actions {
+    opacity: 1;
+  }
+}

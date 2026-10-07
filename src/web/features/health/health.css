@@ -1,0 +1,7 @@
+/* SystemHealth banners at the top of Settings (fix-platform F59/F66). */
+.health__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}

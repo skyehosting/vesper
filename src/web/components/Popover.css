@@ -1,0 +1,19 @@
+.popover {
+  max-width: min(var(--avail-w, 100vw), calc(100vw - 16px));
+}
+.popover__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+.popover__title {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 620;
+}

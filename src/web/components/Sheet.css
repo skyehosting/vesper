@@ -1,0 +1,131 @@
+.sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  display: flex;
+  background: var(--scrim);
+  animation: sheet-fade var(--dur-2) var(--ease-out);
+}
+.sheet-scrim--end {
+  justify-content: flex-end;
+}
+.sheet-scrim--start {
+  justify-content: flex-start;
+}
+.sheet-scrim--bottom {
+  align-items: flex-end;
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--bg-1);
+  color: var(--text-0);
+  box-shadow: var(--shadow-2);
+  outline: none;
+}
+.sheet:focus-visible {
+  box-shadow: var(--shadow-2), inset 0 0 0 2px var(--accent);
+}
+.sheet--end,
+.sheet--start {
+  height: 100%;
+  border-radius: 0;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.sheet--end {
+  border-left: 1px solid var(--line-strong);
+  animation: sheet-in-end var(--dur-3) var(--ease-out);
+}
+.sheet--start {
+  border-right: 1px solid var(--line-strong);
+  animation: sheet-in-start var(--dur-3) var(--ease-out);
+}
+.sheet--bottom {
+  width: 100%;
+  max-height: 92dvh;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  border-top: 1px solid var(--line-strong);
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: sheet-in-bottom var(--dur-3) var(--ease-out);
+  transition: transform var(--dur-2) var(--ease-out);
+}
+.sheet--bottom.is-dragging {
+  transition: none;
+}
+
+.sheet__head {
+  flex: none;
+  touch-action: none;
+}
+.sheet--end .sheet__head,
+.sheet--start .sheet__head {
+  touch-action: auto;
+}
+.sheet__handle {
+  width: 40px;
+  height: 4px;
+  margin: 8px auto 0;
+  border-radius: 2px;
+  background: var(--line-strong);
+}
+.sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 6px 20px;
+}
+.sheet__title {
+  font-size: var(--fs-lg);
+  font-weight: 620;
+  line-height: 1.3;
+}
+.sheet__desc {
+  padding: 0 20px 4px;
+  color: var(--text-1);
+}
+.sheet__body {
+  flex: 1;
+  min-height: 0;
+  padding: 12px 20px 20px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.sheet__footer {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--line);
+}
+.sheet--bottom .sheet__footer > * {
+  flex: 1;
+}
+
+@keyframes sheet-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sheet-in-end {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+@keyframes sheet-in-start {
+  from {
+    transform: translateX(-24px);
+    opacity: 0;
+  }
+}
+@keyframes sheet-in-bottom {
+  from {
+    transform: translateY(40px);
+    opacity: 0.4;
+  }
+}

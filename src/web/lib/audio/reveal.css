@@ -1,0 +1,34 @@
+/*
+ * Synced reveal (07 C14): the CSS Custom Highlight API paints these over a reply root — no per-glyph spans, layout
+ * never shifts. Fades mix `--reveal-fg` (an element's text colour; renderers set it on links/code/headings whose
+ * colour differs) because `currentColor` inside color-mix() does not resolve in ::highlight in Chromium 151.
+ */
+::highlight(vesper-unrevealed) {
+  color: transparent;
+  text-decoration-color: transparent;
+  text-shadow: none;
+}
+::highlight(vesper-reveal-1) {
+  color: color-mix(in srgb, var(--reveal-fg, var(--text-0)) 75%, transparent);
+  text-decoration-color: transparent;
+}
+::highlight(vesper-reveal-2) {
+  color: color-mix(in srgb, var(--reveal-fg, var(--text-0)) 50%, transparent);
+  text-decoration-color: transparent;
+}
+::highlight(vesper-reveal-3) {
+  color: color-mix(in srgb, var(--reveal-fg, var(--text-0)) 25%, transparent);
+  text-decoration-color: transparent;
+}
+[data-revealing] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+/*
+ * F33: highlights paint glyphs only. An element whose first char has not been revealed (set by the RevealController,
+ * also while frozen after a barge-in) hides its own boxes too: list markers, code boxes and their header, quote bars,
+ * rules, table borders, images, inline-code backgrounds. visibility keeps the layout exactly where it is.
+ */
+[data-unrevealed] {
+  visibility: hidden;
+}

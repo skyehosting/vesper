@@ -1,0 +1,301 @@
+/* Page building blocks (layout.tsx): page header, groups of rows, link rows, small stats. 4 px grid, 04 tokens. */
+
+.mp {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  padding-bottom: 48px;
+}
+.mp--wide {
+  max-width: 1080px;
+}
+.mp__head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mp__titles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  min-width: 0;
+}
+.mp__title {
+  color: var(--text-0);
+  font-size: var(--fs-xl);
+  font-weight: 640;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.mp__desc {
+  max-width: 62ch;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
+.mp__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── groups ─────────────────────────────────────────────────────────────────────────────────── */
+.mg {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+/* Same as settings' .sgroup__head / __title / __desc (P09). */
+.mg__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px;
+}
+.mg__titles {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.mg__title {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+.mg__desc {
+  margin-top: 2px;
+  max-width: 64ch;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.mg__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+.mg__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-2);
+}
+.mg__card--flush {
+  overflow: hidden;
+}
+
+/* ── rows ───────────────────────────────────────────────────────────────────────────────────── */
+.mr {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px 16px;
+}
+.mr + .mr {
+  border-top: 1px solid var(--line);
+}
+.mr__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+.mr--stack .mr__main {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+.mr__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.mr__label {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 520;
+  line-height: 1.4;
+}
+.mr__desc {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.mr__desc a {
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.mr__control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+.mr__extra {
+  min-width: 0;
+}
+/* A Switch row fills the row by itself (the Switch has its own label). */
+.mr > .switch-row {
+  min-height: 0;
+}
+
+/* ── link rows ──────────────────────────────────────────────────────────────────────────────── */
+.mlink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 14px 12px 16px;
+  color: var(--text-1);
+  text-decoration: none;
+  transition: background-color var(--dur-1) var(--ease-out);
+}
+.mlink + .mlink {
+  border-top: 1px solid var(--line);
+}
+.mlink:first-child {
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
+}
+.mlink:last-child {
+  border-bottom-left-radius: var(--r-lg);
+  border-bottom-right-radius: var(--r-lg);
+}
+.mlink:hover {
+  background: var(--bg-3);
+  text-decoration: none;
+}
+.mlink:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.mlink__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  background: var(--bg-3);
+  color: var(--accent-ink);
+}
+.mlink__icon svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.75;
+}
+.mlink__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.mlink__title {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 520;
+}
+.mlink__desc {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+.mlink__meta {
+  flex: none;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.mlink__chev {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--text-2);
+}
+
+/* ── stats ──────────────────────────────────────────────────────────────────────────────────── */
+.mstats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--line);
+}
+.mstats__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--bg-2);
+}
+.mstats__label {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 560;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.mstats__value {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-0);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mstats__item--warning .mstats__value {
+  color: var(--warning);
+}
+.mstats__item--danger .mstats__value {
+  color: var(--danger);
+}
+.mstats__item--success .mstats__value {
+  color: var(--success);
+}
+
+.mnote {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+@media (max-width: 719.98px) {
+  .mp {
+    gap: 24px;
+  }
+  .mr__main {
+    flex-wrap: wrap;
+  }
+  .mr__control {
+    justify-content: flex-start;
+  }
+  .mr__main:has(> .mr__text) > .mr__control:has(> .btn, > .select, > .segmented) {
+    flex-basis: 100%;
+  }
+  .mlink {
+    min-height: 60px;
+  }
+}

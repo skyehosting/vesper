@@ -1,0 +1,55 @@
+{
+  "_comment": "Licences of what Vesper ships or downloads besides npm packages (07 E7). scripts/licenses.mjs appends these to THIRD_PARTY_NOTICES.txt. Keep `downloadable` in step with src/shared/models.ts (a unit test checks the ids).",
+  "shipped": [
+    {
+      "name": "Silero VAD",
+      "files": "resources/models/silero_vad.onnx",
+      "license": "MIT",
+      "attribution": "Silero VAD by Silero Team, MIT licence."
+    },
+    {
+      "name": "sherpa-onnx",
+      "files": "node_modules/sherpa-onnx-node, node_modules/sherpa-onnx-win-x64 (app.asar.unpacked)",
+      "license": "Apache-2.0",
+      "attribution": "sherpa-onnx by the k2-fsa project (Next-gen Kaldi), Apache License 2.0."
+    },
+    {
+      "name": "ONNX Runtime",
+      "files": "onnxruntime.dll, onnxruntime_providers_shared.dll (inside sherpa-onnx-win-x64)",
+      "license": "MIT",
+      "attribution": "ONNX Runtime by Microsoft Corporation, MIT licence."
+    },
+    {
+      "name": "espeak-ng",
+      "files": "statically linked into sherpa-onnx-c-api.dll",
+      "license": "GPL-3.0-or-later",
+      "attribution": "espeak-ng by the espeak-ng contributors, GNU General Public License v3.0 or later. It is linked into the sherpa-onnx native library for text-to-speech front ends. Redistributing Vesper publicly brings GPL-3.0 obligations (corresponding source for espeak-ng: https://github.com/espeak-ng/espeak-ng)."
+    },
+    {
+      "name": "Inter and JetBrains Mono fonts",
+      "files": "bundled in the web client (@fontsource packages, listed below with their licence texts)",
+      "license": "OFL-1.1",
+      "attribution": "Inter by Rasmus Andersson; JetBrains Mono by JetBrains. SIL Open Font License 1.1."
+    }
+  ],
+  "downloadable": [
+    {
+      "id": "parakeet-tdt-0.6b-v3-int8",
+      "name": "Parakeet TDT 0.6B v3",
+      "license": "CC-BY-4.0",
+      "attribution": "NVIDIA Parakeet TDT 0.6B v3 by NVIDIA, licensed CC BY 4.0; ONNX conversion by the sherpa-onnx project."
+    },
+    {
+      "id": "moonshine-base-en-2026-02-27",
+      "name": "Moonshine base (English)",
+      "license": "MIT",
+      "attribution": "Moonshine by Useful Sensors, MIT licence; ONNX conversion by the sherpa-onnx project."
+    },
+    {
+      "id": "sense-voice-2024-07-17-int8",
+      "name": "SenseVoice",
+      "license": "Model licence of FunAudioLLM SenseVoice (see model card)",
+      "attribution": "SenseVoice by FunAudioLLM / Alibaba; ONNX conversion by the sherpa-onnx project."
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+.btn {
+  --btn-h: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: max(var(--btn-h), var(--target));
+  padding: 0 14px;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  font-size: var(--fs-md);
+  font-weight: 550;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out),
+    opacity var(--dur-1) var(--ease-out);
+}
+.btn--sm {
+  --btn-h: 28px;
+  padding: 0 10px;
+  font-size: var(--fs-sm);
+  border-radius: var(--r-sm);
+  gap: 6px;
+}
+.btn--lg {
+  --btn-h: 44px;
+  padding: 0 20px;
+  font-size: var(--fs-lg);
+  border-radius: var(--r-lg);
+}
+.btn--block {
+  display: flex;
+  width: 100%;
+}
+
+.btn__icon {
+  display: inline-flex;
+  /* In a tight flex row the icon keeps its size (it used to shrink first, to 0–7 px). */
+  flex: none;
+}
+.btn__icon svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.75;
+}
+.btn--lg .btn__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.btn--primary:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.btn--secondary {
+  background: var(--bg-3);
+  border-color: var(--line-strong);
+  color: var(--text-0);
+}
+.btn--secondary:hover:not(:disabled) {
+  background: var(--bg-4);
+}
+
+.btn--ghost {
+  color: var(--text-1);
+}
+.btn--ghost:hover:not(:disabled) {
+  background: var(--bg-3);
+  color: var(--text-0);
+}
+
+.btn--danger {
+  background: var(--danger);
+  color: var(--on-danger);
+}
+.btn--danger:hover:not(:disabled) {
+  background: var(--danger-strong);
+  color: #fff;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0.5px);
+}
+.btn:disabled {
+  opacity: 0.45;
+}
+.btn.is-loading {
+  cursor: progress;
+}
+.btn:focus-visible {
+  border-radius: var(--r-md);
+}

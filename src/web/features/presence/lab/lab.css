@@ -1,0 +1,68 @@
+.plab {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 100%;
+  padding: 56px 24px 24px;
+  gap: 16px;
+}
+.plab__stage {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+}
+.plab__state {
+  color: var(--text-1);
+}
+.plab__controls {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+.plab__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+.plab--bare {
+  grid-template-rows: 1fr;
+  padding: 0;
+}
+/* v11 design pass: the presence behind a chat column's text. */
+.plab__chat {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  justify-items: center;
+}
+.plab__behind {
+  position: absolute;
+  inset: 0;
+}
+.plab__msgs {
+  position: relative;
+  z-index: 1;
+  width: min(760px, calc(100% - 32px));
+  padding: 72px 0 120px;
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-0);
+}
+.plab__msgs p {
+  margin: 0;
+}
+.plab__ai {
+  display: grid;
+  gap: 12px;
+}
+.plab__user {
+  justify-self: end;
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: var(--r-lg);
+  background: color-mix(in oklab, var(--accent) 14%, var(--bg-2));
+}

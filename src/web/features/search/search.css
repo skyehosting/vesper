@@ -1,0 +1,238 @@
+/* Global search page */
+.search {
+  height: 100%;
+  overflow-y: auto;
+}
+.search__heading {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 620;
+}
+.search__inner {
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+}
+.search__box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search__box > svg {
+  position: absolute;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+  color: var(--text-2);
+  pointer-events: none;
+}
+.search__input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px 0 48px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  color: var(--text-0);
+  font-size: var(--fs-lg);
+  box-shadow: var(--shadow-1);
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+.search__input::placeholder {
+  color: var(--text-2);
+}
+.search__input:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-1);
+}
+.search__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 14px;
+}
+.search__mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.search__session {
+  width: 220px;
+}
+.search__filters .field-wrap,
+.search__filters .select {
+  min-width: 0;
+}
+/* One control height across the toolbar (fix5-ui P14): segmented pills and selects line up, text on one line. */
+.search__filters {
+  --search-ctl-h: max(34px, var(--target));
+}
+.search__filters .segmented {
+  --seg-h: calc(var(--search-ctl-h) - 4px);
+}
+.search__filters .segmented__item {
+  min-height: var(--seg-h);
+}
+.search__filters .input {
+  --input-h: var(--search-ctl-h);
+  height: var(--search-ctl-h);
+  min-height: var(--search-ctl-h);
+}
+.search__note {
+  margin-top: 10px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.search__results {
+  margin-top: 22px;
+}
+.search__results .empty-state {
+  margin-top: 40px;
+}
+.search__count {
+  margin: 0 4px 8px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+.search__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.search__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+.search__skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* One hit */
+.shit--skel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+}
+.shit__link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-1);
+  color: var(--text-1);
+  transition:
+    background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
+}
+.shit__link:hover {
+  background: var(--bg-2);
+  border-color: var(--line-strong);
+  text-decoration: none;
+}
+.shit__link:focus-visible {
+  border-radius: var(--r-lg);
+}
+.shit__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  font-size: var(--fs-sm);
+}
+.shit__who {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-2);
+  font-weight: 600;
+}
+.shit__who svg {
+  width: 14px;
+  height: 14px;
+}
+.shit__who.is-you {
+  color: var(--accent-ink);
+}
+.shit__chat {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-0);
+  font-weight: 600;
+}
+.shit__id {
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.shit__when {
+  margin-left: auto;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+.shit__date {
+  color: var(--text-2);
+}
+.shit__snippet {
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.shit__snippet mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+  color: var(--text-0);
+}
+
+@media (max-width: 719.98px) {
+  .search__inner {
+    padding: 16px 12px 40px;
+  }
+  .search__filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+  .search__mode,
+  .search__session,
+  .search__who {
+    grid-column: 1 / -1;
+  }
+  /* "When" and "Sort" share the last row. */
+  .search__who {
+    order: 1;
+  }
+  .search__filters > :not(.search__mode):not(.search__session):not(.search__who) {
+    order: 2;
+  }
+  .search__session {
+    width: auto;
+  }
+  .search__mode > .segmented {
+    flex: 1;
+  }
+  .shit__when {
+    margin-left: 0;
+  }
+  .shit__date {
+    display: none;
+  }
+}

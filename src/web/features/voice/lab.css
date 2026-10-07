@@ -1,0 +1,89 @@
+/* The voice lab (test builds only): a bare page that hosts the voice client for e2e and screenshots. */
+.vlab {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg-0);
+}
+.vlab__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: var(--bar-h);
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+}
+.vlab__bar h1 {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+.vlab__feed {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+.vlab__user {
+  align-self: flex-end;
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: var(--r-lg);
+  background: var(--user-bubble);
+  color: var(--text-0);
+}
+.vlab__reply {
+  display: grid;
+  gap: 6px;
+  color: var(--text-0);
+  font-size: var(--msg-fs);
+  line-height: var(--msg-lh);
+}
+.vlab__text {
+  white-space: pre-wrap;
+}
+.vlab__rest {
+  justify-self: start;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.vlab__rest:hover {
+  color: var(--text-0);
+}
+.vlab__meta {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+.vlab--wizard {
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: 32px 16px;
+  background:
+    radial-gradient(60% 50% at 50% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%),
+    var(--bg-0);
+}
+.vlab__card {
+  width: min(100%, 720px);
+  padding: 32px;
+  border-radius: var(--r-xl);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  box-shadow: var(--shadow-2);
+}
+@media (max-width: 719.98px) {
+  .vlab--wizard {
+    padding: 12px;
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+  .vlab__card {
+    padding: 20px 16px;
+  }
+}

@@ -1,0 +1,291 @@
+/*
+ * Design tokens (04-DESIGN-SYSTEM + 07 D10). Components never hard-code colors: everything reads these custom
+ * properties. Theme = data-theme on <html> (dark | light | system), accent = data-accent (gold | violet | rose |
+ * aurora | ice), motion = data-reduce-motion. The values are applied from settings by app/appearance.ts.
+ */
+
+:root {
+  /* type */
+  --font-ui: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --fs-xs: 11px;
+  --fs-sm: 12.5px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+  --fs-2xl: 28px;
+  /* message text is user-adjustable (chat.fontSize 13–20) */
+  --msg-fs: 15px;
+  --msg-lh: 1.6;
+
+  /* space: 4 px grid */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+
+  /* shape */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-full: 999px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+
+  /* layout */
+  --sidebar-w: 272px;
+  --panel-w: 320px;
+  --bar-h: 48px;
+  /* Room for the native Windows caption buttons (titleBarOverlay) — set by html.is-desktop. */
+  --caption-w: 0px;
+  --target: 32px;
+
+  /* layers */
+  --z-sheet: 40;
+  --z-banner: 50;
+  --z-dialog: 60;
+  /* menus, listboxes and popovers: above dialogs (they open from inside them), below toasts */
+  --z-popover: 65;
+  --z-toast: 70;
+  --z-tooltip: 80;
+
+  /* states (both themes) */
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --danger-strong: #ef4444;
+  --on-danger: #1f0606;
+  --info: #7dd3fc;
+  /* state-colored TEXT (badges, inline status): readable on the state's own 16 % tint over every surface (F48) */
+  --success-ink: #4ade80;
+  --warning-ink: #fbbf24;
+  --danger-ink: #f87171;
+  --info-ink: #7dd3fc;
+
+  /* dark (default) */
+  color-scheme: dark;
+  --bg-0: #07070d;
+  --bg-1: #0c0c16;
+  --bg-2: #121222;
+  --bg-3: #1a1a2e;
+  --bg-4: #23233b;
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --text-0: #f3f1fb;
+  --text-1: #c5c1d8;
+  --text-2: #8f8aa8;
+  --scrim: rgba(3, 3, 8, 0.6);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 8px 28px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.4);
+  /* glass: transient surfaces only (menus, popovers, dialogs, toasts) — 07 D10 */
+  --glass-bg: rgba(18, 18, 34, 0.72);
+  --glass-blur: 14px;
+  --glass-line: rgba(255, 255, 255, 0.1);
+  /* persistent surfaces over the stage/list: opaque --bg-2 at 92–96 % */
+  --surface-over: rgba(18, 18, 34, 0.94);
+  --theme-color: #07070d;
+
+  /* accent (gold default; see data-accent below) */
+  --accent: #f5b84c;
+  --accent-strong: #f8c96f;
+  --accent-ink: #f5b84c;
+  --on-accent: #1a1306;
+  --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
+  --accent-line: color-mix(in srgb, var(--accent) 40%, transparent);
+  --user-bubble: color-mix(in srgb, var(--accent) 14%, var(--bg-2));
+  --focus-ring: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--accent);
+}
+
+/* ── light ───────────────────────────────────────────────────────────────────────────────────── */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg-0: #f7f6fb;
+  --bg-1: #efedf6;
+  --bg-2: #ffffff;
+  --bg-3: #e9e6f3;
+  --bg-4: #dedaec;
+  --line: rgba(20, 16, 40, 0.08);
+  --line-strong: rgba(20, 16, 40, 0.16);
+  --text-0: #16141f;
+  --text-1: #45405a;
+  --text-2: #6d6884;
+  --scrim: rgba(22, 20, 31, 0.32);
+  --shadow-1: 0 1px 2px rgba(20, 16, 40, 0.08);
+  --shadow-2: 0 10px 30px rgba(20, 16, 40, 0.14), 0 1px 3px rgba(20, 16, 40, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-line: rgba(20, 16, 40, 0.1);
+  --surface-over: rgba(255, 255, 255, 0.95);
+  --theme-color: #f7f6fb;
+  --success: #15803d;
+  --warning: #a16207;
+  --danger: #c62828;
+  --danger-strong: #b71c1c;
+  --on-danger: #ffffff;
+  --info: #0b6c99;
+  --success-ink: #166534;
+  --warning-ink: #7a4508;
+  --danger-ink: #a61b1b;
+  --info-ink: #075985;
+}
+
+/* "system" follows the OS; duplicated from the light block because CSS can't share a rule across a media query. */
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] {
+    color-scheme: light;
+    --bg-0: #f7f6fb;
+    --bg-1: #efedf6;
+    --bg-2: #ffffff;
+    --bg-3: #e9e6f3;
+    --bg-4: #dedaec;
+    --line: rgba(20, 16, 40, 0.08);
+    --line-strong: rgba(20, 16, 40, 0.16);
+    --text-0: #16141f;
+    --text-1: #45405a;
+    --text-2: #6d6884;
+    --scrim: rgba(22, 20, 31, 0.32);
+    --shadow-1: 0 1px 2px rgba(20, 16, 40, 0.08);
+    --shadow-2: 0 10px 30px rgba(20, 16, 40, 0.14), 0 1px 3px rgba(20, 16, 40, 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.78);
+    --glass-line: rgba(20, 16, 40, 0.1);
+    --surface-over: rgba(255, 255, 255, 0.95);
+    --theme-color: #f7f6fb;
+    --success: #15803d;
+    --warning: #a16207;
+    --danger: #c62828;
+    --danger-strong: #b71c1c;
+    --on-danger: #ffffff;
+    --info: #0b6c99;
+    --success-ink: #166534;
+    --warning-ink: #7a4508;
+    --danger-ink: #a61b1b;
+    --info-ink: #075985;
+  }
+}
+
+/* ── accents ─────────────────────────────────────────────────────────────────────────────────── */
+/* --accent fills (buttons, rings); --accent-ink is accent-colored TEXT, darkened in light theme for ≥ 4.5:1 on every
+   surface, also over the accent's own 14–16 % tint (selected rows, chips, badges — F48). */
+:root[data-accent='violet'] {
+  --accent: #a78bfa;
+  --accent-strong: #bba5fc;
+  --accent-ink: #a78bfa;
+  --on-accent: #140c2b;
+}
+:root[data-accent='rose'] {
+  --accent: #fb7185;
+  --accent-strong: #fc8d9d;
+  --accent-ink: #fb7185;
+  --on-accent: #2a070e;
+}
+:root[data-accent='aurora'] {
+  --accent: #34d399;
+  --accent-strong: #5eddb0;
+  --accent-ink: #34d399;
+  --on-accent: #04241a;
+}
+:root[data-accent='ice'] {
+  --accent: #7dd3fc;
+  --accent-strong: #9edefd;
+  --accent-ink: #7dd3fc;
+  --on-accent: #06202d;
+}
+
+:root[data-theme='light'] {
+  --accent-ink: #7a4f00;
+  --accent-strong: #e9a52f;
+}
+:root[data-theme='light'][data-accent='violet'] {
+  --accent-ink: #5b3cc4;
+  --accent-strong: #9575f6;
+}
+:root[data-theme='light'][data-accent='rose'] {
+  --accent-ink: #a82a42;
+  --accent-strong: #f25a71;
+}
+:root[data-theme='light'][data-accent='aurora'] {
+  --accent-ink: #0b6646;
+  --accent-strong: #22c088;
+}
+:root[data-theme='light'][data-accent='ice'] {
+  --accent-ink: #075985;
+  --accent-strong: #5cc5f8;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] {
+    --accent-ink: #7a4f00;
+    --accent-strong: #e9a52f;
+  }
+  :root[data-theme='system'][data-accent='violet'] {
+    --accent-ink: #5b3cc4;
+    --accent-strong: #9575f6;
+  }
+  :root[data-theme='system'][data-accent='rose'] {
+    --accent-ink: #a82a42;
+    --accent-strong: #f25a71;
+  }
+  :root[data-theme='system'][data-accent='aurora'] {
+    --accent-ink: #0b6646;
+    --accent-strong: #22c088;
+  }
+  :root[data-theme='system'][data-accent='ice'] {
+    --accent-ink: #075985;
+    --accent-strong: #5cc5f8;
+  }
+}
+
+/* ── platform & preferences ──────────────────────────────────────────────────────────────────── */
+:root.is-desktop {
+  /* titleBarOverlay on Windows: three caption buttons ≈ 138 px */
+  --caption-w: 140px;
+}
+
+/* Reduced motion: the app setting (data-reduce-motion) or the OS. Durations collapse; components may also check. */
+:root[data-reduce-motion='true'] {
+  --dur-1: 0.01ms;
+  --dur-2: 0.01ms;
+  --dur-3: 0.01ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 0.01ms;
+    --dur-2: 0.01ms;
+    --dur-3: 0.01ms;
+  }
+}
+
+/* Reduced transparency: glass becomes opaque (07 D10). */
+@media (prefers-reduced-transparency: reduce) {
+  /* [data-theme] too: the light theme block would otherwise win on specificity (access-ui fix, see requests). */
+  :root,
+  :root[data-theme] {
+    --glass-bg: var(--bg-2);
+    --glass-blur: 0px;
+    --surface-over: var(--bg-2);
+  }
+}
+
+/* Phones: no backdrop-filter at all (scroll jank), 44 px touch targets (07 D8). */
+@media (max-width: 719.98px) {
+  /* [data-theme] too: the light theme block would otherwise keep its 78 % glass (access-ui fix, see requests). */
+  :root,
+  :root[data-theme] {
+    --glass-blur: 0px;
+    --glass-bg: var(--bg-2);
+    --target: 44px;
+    --bar-h: 52px;
+  }
+}
+@media (pointer: coarse) {
+  :root {
+    --target: 44px;
+  }
+}

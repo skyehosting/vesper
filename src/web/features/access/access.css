@@ -1,0 +1,747 @@
+/* Settings → Access & security, wizard step 6, pairing and sudo dialogs (access-ui). Tokens only (04). */
+.acc {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  max-width: 820px;
+  padding-bottom: 32px;
+}
+.acc--wizard {
+  gap: 20px;
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+/* ── headings ─────────────────────────────────────────────────────────────────────────────── */
+.acc-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acc-head__title {
+  font-size: var(--fs-xl);
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+}
+.acc-head__lead {
+  max-width: 64ch;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
+.acc-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scroll-margin-top: 16px;
+}
+.acc-section__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.acc-section__head > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.acc-section__head > .btn {
+  flex: none;
+}
+.acc-section__title {
+  color: var(--text-0);
+  font-size: var(--fs-lg);
+  font-weight: 620;
+  line-height: 1.3;
+}
+.acc-section__lead {
+  color: var(--text-2);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+/* Inside Settings, sections use the shared SettingsGroup header (fix5-ui P09). */
+.acc:not(.acc--wizard) .acc-section__title {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  line-height: inherit;
+}
+.acc:not(.acc--wizard) .acc-section__lead {
+  font-size: var(--fs-sm);
+}
+
+/* ── shared bits ──────────────────────────────────────────────────────────────────────────── */
+.acc-muted {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.acc-label {
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  font-weight: 560;
+}
+.acc-mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.acc-error {
+  color: var(--danger);
+  font-size: var(--fs-md);
+}
+.acc-gap-top {
+  margin-top: 12px;
+}
+.acc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-ink);
+  font-weight: 550;
+}
+.acc-link svg {
+  width: 13px;
+  height: 13px;
+}
+.acc-status-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+}
+.acc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-2);
+  flex: none;
+}
+.acc-dot--ok {
+  background: var(--success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 18%, transparent);
+}
+.acc-banners {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.acc-banners:empty {
+  display: none;
+}
+.acc-skel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── panels (Card) ────────────────────────────────────────────────────────────────────────── */
+.acc-panel {
+  gap: 18px;
+}
+.acc-panel > .card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.acc-panel .card__head {
+  align-items: center;
+}
+.acc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.acc-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.acc-row__title {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 560;
+}
+.acc-row > .btn {
+  flex: none;
+}
+.acc-switches {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+/* ── mode picker + matrix ─────────────────────────────────────────────────────────────────── */
+.acc-mode .radio-card {
+  align-items: flex-start;
+}
+.acc-mode__needs {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.01em;
+}
+@container (max-width: 620px) {
+  .acc-mode .radio-group__items {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.acc-apply {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding: 12px 14px 12px 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--accent-line);
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg-2));
+  animation: acc-rise var(--dur-2) var(--ease-out);
+}
+.acc-apply__text {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  min-width: 0;
+  flex: 1 1 240px;
+}
+.acc-apply__buttons {
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+@keyframes acc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.acc-matrix-wrap {
+  overflow-x: auto;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.acc-matrix {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--fs-sm);
+}
+.acc-matrix th,
+.acc-matrix td {
+  padding: 9px 12px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.acc-matrix tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.acc-matrix thead th {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.acc-matrix tbody th {
+  color: var(--text-1);
+  font-weight: 500;
+  width: 34%;
+}
+.acc-matrix .is-selected {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.acc-matrix thead .is-selected {
+  color: var(--accent-ink);
+}
+.acc-matrix__cell {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.acc-matrix__note {
+  color: var(--text-2);
+  line-height: 1.35;
+}
+.acc-cap {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+.acc-cap svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.5;
+}
+.acc-cap--yes {
+  background: color-mix(in srgb, var(--success) 16%, transparent);
+  color: var(--success);
+}
+.acc-cap--no {
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+}
+.acc-cap--na {
+  color: var(--text-2);
+}
+.acc-matrix__short {
+  display: none;
+}
+.disclosure .acc-matrix-wrap {
+  margin-top: 4px;
+}
+
+/* ── LAN ──────────────────────────────────────────────────────────────────────────────────── */
+.acc-lan {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.acc-lan__addrs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.acc-lan__qr {
+  flex: none;
+}
+.acc-urls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acc-urls li,
+div.acc-urls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 4px 4px 4px 12px;
+  border-radius: var(--r-md);
+  background: var(--bg-3);
+}
+/* "On your phone, open": the one address to type, big enough to read across a desk (07 H-v111-firewall). */
+.acc-lan__open-label {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+.acc-lan__open {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px 8px 8px 14px;
+  border-radius: var(--r-md);
+  background: var(--bg-3);
+}
+.acc-lan__url {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text-0);
+  font-size: 18px;
+  font-weight: 600;
+}
+.acc-lan__cert {
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+/* This PC card: the address other devices use (or why there is none). */
+.acc-others {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.acc-others .acc-mono {
+  color: var(--text-0);
+  overflow-wrap: anywhere;
+}
+.acc-urls__text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text-1);
+}
+.acc-served {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.acc-cert {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.acc-cert__head,
+.acc-fw__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.acc-fp {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--bg-3);
+  color: var(--text-0);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+.acc-fw {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+/* ── Tailscale ────────────────────────────────────────────────────────────────────────────── */
+.acc-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  counter-reset: none;
+}
+.acc-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  color: var(--text-1);
+  font-size: var(--fs-md);
+}
+.acc-checklist li .status-dot,
+.acc-checklist li > :first-child {
+  margin-top: 6px;
+}
+.acc-checklist li.is-done {
+  color: var(--text-2);
+}
+.acc-checklist li.is-next {
+  background: var(--bg-3);
+  color: var(--text-0);
+}
+.acc-checklist__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.acc-checklist__help {
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+}
+.acc-checklist__help a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-ink);
+  font-weight: 550;
+}
+.acc-checklist__help a svg {
+  width: 13px;
+  height: 13px;
+}
+.acc-funnel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 4px;
+}
+
+/* ── password ─────────────────────────────────────────────────────────────────────────────── */
+.acc-pw {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 520px;
+}
+.acc-pw__rules {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: -4px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.acc-pw__rules li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color var(--dur-2) var(--ease-out);
+}
+.acc-pw__rules svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+.acc-pw__rules li.is-ok {
+  color: var(--text-1);
+}
+.acc-pw__rules li.is-ok svg {
+  color: var(--success);
+}
+.acc-pw__count {
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+.acc-pw__count.is-ok {
+  color: var(--success);
+}
+.acc-pw__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.acc-pw__foot > .acc-muted {
+  flex: 1 1 220px;
+}
+
+/* ── pairing dialog ───────────────────────────────────────────────────────────────────────── */
+.acc-pair .dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.acc-pair__body {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.acc-pair__qr {
+  position: relative;
+  flex: none;
+}
+.acc-pair__qr.is-expired .qr {
+  filter: blur(3px) grayscale(1);
+  opacity: 0.35;
+}
+.acc-pair__expired,
+.acc-pair__qr-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  color: var(--text-0);
+  font-weight: 560;
+}
+.acc-pair__qr-error {
+  position: static;
+  width: 208px;
+  height: 208px;
+  padding: 16px;
+  border-radius: var(--r-lg);
+  background: var(--bg-3);
+  font-weight: 450;
+  font-size: var(--fs-sm);
+}
+.acc-pair__side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+.acc-pair__timer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+}
+.acc-steps {
+  display: flex;
+  flex-direction: column;
+  list-style: decimal;
+  gap: 8px;
+  padding-left: 20px;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+.acc-steps li::marker {
+  color: var(--accent-ink);
+  font-weight: 650;
+}
+.acc-pair__code {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.acc-pair__codetext {
+  color: var(--text-0);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  word-spacing: 0.2em;
+  overflow-wrap: anywhere;
+}
+.acc-pair__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.acc-pair__fp {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+@media (max-width: 719.98px) {
+  .acc-pair__body {
+    flex-direction: column;
+    align-items: center;
+  }
+  .acc-pair__side {
+    width: 100%;
+  }
+}
+
+/* ── advanced ─────────────────────────────────────────────────────────────────────────────── */
+.acc-adv {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 6px;
+}
+.acc-ports {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.acc-ports__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+@container (max-width: 560px) {
+  .acc-ports__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── sudo ─────────────────────────────────────────────────────────────────────────────────── */
+.acc-sudo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── read-only summary for other devices ──────────────────────────────────────────────────── */
+.acc-viewer > .card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acc-viewer .acc-row__title {
+  margin-bottom: 2px;
+}
+.acc-pw-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  flex-wrap: wrap;
+  padding: 12px 14px 12px 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+
+/* ── narrow (settings body on phones, or a narrow window) ─────────────────────────────────── */
+@container (max-width: 560px) {
+  .acc-section__head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .acc-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .acc-lan {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .acc-lan__qr {
+    align-self: center;
+  }
+  .acc-matrix th,
+  .acc-matrix td {
+    padding: 8px 8px;
+  }
+  .acc-matrix__note {
+    display: none;
+  }
+  .acc-matrix__long {
+    display: none;
+  }
+  .acc-matrix__short {
+    display: inline;
+  }
+  .acc-matrix thead th {
+    letter-spacing: 0.02em;
+  }
+  .acc-matrix tbody th {
+    width: auto;
+  }
+}
+
+/* Test-only preview of the wizard step (WizardPreview.tsx). */
+.acc-preview {
+  min-height: 100%;
+  padding: calc(var(--bar-h) + 8px) max(16px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left));
+  background: var(--bg-0);
+}
+
+/* "Closing the window quits Vesper" (TrayCallout, fix5-ui P29). */
+.acc-tray .callout__text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.acc-tray__switch .switch-row {
+  min-height: 0;
+}

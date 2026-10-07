@@ -1,0 +1,174 @@
+/* Devices list, activity log and the approval dialog (access-ui). */
+.dev-skel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dev-list .list-item__main {
+  min-height: 60px;
+}
+.dev-list .list-item__desc {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.dev-title {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  min-width: 0;
+}
+.dev-title__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.dev-actions {
+  display: inline-flex;
+  gap: 6px;
+}
+.dev-list .list-item__actions {
+  padding-right: 8px;
+}
+
+/* ── activity log ─────────────────────────────────────────────────────────────────────────── */
+.dev-log {
+  display: flex;
+  flex-direction: column;
+  max-height: 360px;
+  overflow-y: auto;
+  margin: 2px -6px 0 -20px;
+  padding-right: 6px;
+}
+.dev-log__row {
+  display: grid;
+  grid-template-columns: 8px 116px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 7px 4px 7px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-sm);
+}
+.dev-log__row:last-child {
+  border-bottom: 0;
+}
+.dev-log__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-2);
+  align-self: start;
+  margin-top: 5px;
+}
+.dev-log__row--success .dev-log__dot {
+  background: var(--success);
+}
+.dev-log__row--warning .dev-log__dot {
+  background: var(--warning);
+}
+.dev-log__row--danger .dev-log__dot {
+  background: var(--danger);
+}
+.dev-log__time {
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.dev-log__what {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.dev-log__event {
+  color: var(--text-0);
+}
+.dev-log__detail {
+  color: var(--text-2);
+  overflow-wrap: anywhere;
+}
+.dev-log__foot {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+@media (max-width: 719.98px) {
+  .dev-log {
+    margin-left: -12px;
+  }
+  .dev-log__row {
+    grid-template-columns: 8px minmax(0, 1fr);
+    row-gap: 2px;
+  }
+  .dev-log__time {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .dev-log__what {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+/* ── approval dialog ──────────────────────────────────────────────────────────────────────── */
+.dev-approve__name {
+  overflow-wrap: anywhere;
+}
+.dev-approve__body {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
+.dev-approve__body > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dev-approve__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+  color: var(--warning);
+}
+.dev-approve__icon svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.75;
+}
+.dev-approve__meta {
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+}
+.dev-approve__timer {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+}
+.dev-approve__error {
+  color: var(--danger);
+}
+.dev-approve .dialog__footer .dev-approve__later {
+  margin-right: auto;
+}
+
+/* Narrow: a pending row's Deny/Allow move under the text instead of squeezing the name and badge. */
+@media (max-width: 719.98px) {
+  .dev-list .list-item {
+    flex-wrap: wrap;
+  }
+  .dev-list .list-item__main {
+    min-width: 210px;
+  }
+  .dev-list .list-item__actions {
+    margin-left: auto;
+    padding: 0 8px 8px;
+  }
+}

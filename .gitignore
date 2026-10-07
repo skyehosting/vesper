@@ -1,0 +1,9 @@
+node_modules/
+out/
+release/
+.scratch/
+.shots/
+test-results/
+playwright-report/
+*.log
+.env

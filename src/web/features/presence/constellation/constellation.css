@@ -1,0 +1,484 @@
+/* Constellation (07 A4): a night window over the whole content area, with opaque panels (07 D10) floating on it. */
+.cst {
+  position: relative;
+  height: 100%;
+  min-height: 320px;
+  overflow: hidden;
+  background: radial-gradient(
+    90% 70% at 46% 42%,
+    color-mix(in srgb, var(--accent) 7%, var(--star-night-2)) 0%,
+    var(--star-night-1) 48%,
+    var(--star-night-0) 100%
+  );
+  color: var(--text-0);
+  isolation: isolate;
+}
+.cst__title {
+  font-size: var(--fs-lg);
+  font-weight: 620;
+  white-space: nowrap;
+}
+.cst__sub {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.cst__stage {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+.cst__stage:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.cst__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ── labels on the sky ── */
+.cst-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: 220px;
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  color: var(--star-night-text-2);
+  font-size: var(--fs-sm);
+  line-height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  will-change: transform;
+  transition: color var(--dur-2) var(--ease-out);
+}
+.cst-label[data-hot] {
+  color: var(--star-night-text);
+  font-weight: 560;
+}
+.cst-label[data-private] {
+  font-style: italic;
+  opacity: 0.75;
+}
+
+/* ── drag to link ── */
+.cst-drag {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.cst-drag line {
+  stroke: color-mix(in srgb, var(--accent) 70%, white);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+.cst-drag line[data-over] {
+  stroke-dasharray: none;
+  stroke-width: 2;
+  opacity: 1;
+}
+.cst-drag__hint {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: 300px;
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  background: var(--surface-over);
+  border: 1px solid var(--line);
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  box-shadow: var(--shadow-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── the card (transient → glass, 07 D10) ── */
+.cst-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: max-content;
+  min-width: 240px;
+  max-width: 320px;
+  padding: 12px 14px;
+  border-radius: var(--r-lg);
+  /* Over the night sky the usual glass reads muddy in the light theme: near-opaque, still blurred (07 D10). */
+  background: var(--surface-over);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--shadow-2);
+  pointer-events: none;
+  will-change: transform;
+}
+.cst-card__head,
+.cst-sheet .cst-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.cst-card__title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-md);
+  font-weight: 620;
+  color: var(--text-0);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cst-card__id {
+  flex: none;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+.cst-card__facts {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  justify-content: start;
+  column-gap: 18px;
+  margin: 10px 0 0;
+}
+.cst-card__facts div {
+  min-width: 0;
+}
+.cst-card__facts dt {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.cst-card__facts dd {
+  margin: 2px 0 0;
+  color: var(--text-0);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+.cst-card__summary {
+  margin-top: 10px;
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cst-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.cst-card__badges:empty {
+  display: none;
+}
+.cst-card__hint {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+
+/* ── toolbar (persistent over the stage: opaque) ── */
+.cst__toolbar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 24px);
+  padding: 5px;
+  border-radius: var(--r-lg);
+  background: var(--surface-over);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-1);
+}
+.cst__search {
+  width: 260px;
+  min-width: 0;
+}
+/* The kit's clear button replaces Chromium's own. */
+.cst__search input::-webkit-search-cancel-button {
+  display: none;
+}
+.cst__matches {
+  padding: 0 4px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+.cst__tools {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: 4px;
+  border-left: 1px solid var(--line);
+}
+
+/* ── the list ── */
+.cst__list {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-lg);
+  background: var(--surface-over);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+.cst__list-head {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.cst__list-head h2 {
+  font-size: var(--fs-md);
+  font-weight: 620;
+}
+.cst__list-head p {
+  margin-top: 2px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.cst-list__rows {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 6px;
+  overscroll-behavior: contain;
+}
+.cst-list__empty {
+  padding: 18px 16px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+.cst-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border-radius: var(--r-md);
+}
+.cst-row:hover,
+.cst-row[data-selected] {
+  background: var(--bg-3);
+}
+.cst-row__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--target);
+  padding: 7px 8px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cst-row__main:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.cst-row__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+.cst-row[data-private] .cst-row__dot {
+  background: var(--text-2);
+  box-shadow: none;
+}
+.cst-row__text {
+  min-width: 0;
+  display: grid;
+}
+.cst-row__title {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cst-row__meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+.cst-row:hover .cst-row__meta,
+.cst-row[data-selected] .cst-row__meta {
+  color: var(--text-1);
+}
+.cst-row__meta svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+.cst-row__link {
+  flex: none;
+  opacity: 0;
+}
+.cst-row:hover .cst-row__link,
+.cst-row:focus-within .cst-row__link,
+.cst-row[data-selected] .cst-row__link {
+  opacity: 1;
+}
+@media (pointer: coarse) {
+  .cst-row__link {
+    opacity: 1;
+  }
+}
+
+/* ── legend ── */
+.cst__legend {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  max-width: calc(100% - 360px);
+  color: var(--star-night-text-2);
+  font-size: var(--fs-xs);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+.cst__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.cst__legend-hint {
+  opacity: 0.85;
+}
+.cst-key {
+  display: inline-block;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.cst-key--big {
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 0 6px var(--accent);
+}
+.cst-key--bright {
+  width: 6px;
+  height: 6px;
+  background: var(--star-night-text);
+  box-shadow: 0 0 8px 2px color-mix(in srgb, var(--accent) 70%, white);
+}
+.cst-key--dim {
+  width: 6px;
+  height: 6px;
+  background: var(--star-night-text-2);
+  opacity: 0.55;
+}
+
+/* ── states ── */
+.cst__state {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  pointer-events: none;
+}
+.cst__state > * {
+  pointer-events: auto;
+  max-width: 460px;
+  border-radius: var(--r-xl);
+  background: var(--surface-over);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-2);
+}
+.cst__state > .spinner,
+.cst__state > [role='status'] {
+  padding: 14px 18px;
+}
+.cst__nogl {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  overflow: auto;
+}
+.cst__nogl .cst__toolbar {
+  position: static;
+  max-width: none;
+}
+.cst__nogl .cst__search {
+  flex: 1;
+}
+.cst__nogl .cst-list__rows {
+  flex: none;
+  border-radius: var(--r-lg);
+  background: var(--surface-over);
+  border: 1px solid var(--line);
+}
+
+.cst-linkdlg {
+  display: grid;
+  gap: 14px;
+}
+
+/* ── phone ── */
+.cst[data-phone] .cst__toolbar {
+  left: 8px;
+  right: 8px;
+  top: 8px;
+}
+.cst[data-phone] .cst__search {
+  flex: 1;
+  width: auto;
+}
+.cst-sheet {
+  display: grid;
+  gap: 4px;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.cst-sheet__actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .cst-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--bg-2);
+  }
+}

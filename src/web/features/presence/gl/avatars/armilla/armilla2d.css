@@ -1,0 +1,132 @@
+/*
+ * Armilla without WebGL (Armilla2d.tsx). Colours (saturation folded in) and strengths arrive as custom properties once
+ * per scheduled frame. No CSS filters on anything that moves: brightness is opacity, saturation is in the colours.
+ */
+.arm2d {
+  --arm-h: 0.85;
+  --arm-g: 0.53;
+  --arm-glow: 1;
+  --arm-listen: 0;
+  --arm-error: 0;
+  --arm-dim: 1;
+  --arm-cap: 1;
+  --arm-halo-o: 1;
+  --arm-bead-o: 1;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: var(--arm-dim);
+}
+.arm2d svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.arm2d path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+/* The gimbals: no audio term — their opacity is the gimbal brightness (ringFrame). */
+.arm2d__ring {
+  stroke: color-mix(in oklab, var(--arm-ring), var(--arm-mic) calc(var(--arm-listen) * 35%));
+  stroke-width: 1px;
+  opacity: var(--arm-g);
+}
+.arm2d__ring--outer {
+  stroke-dasharray: none;
+}
+/* The horizon: the voice — its own brightness, faded out before the drawing's edge (#arm2d-hfade). */
+.arm2d__hf {
+  stop-color: color-mix(in oklab, var(--arm-horizon), var(--arm-mic) calc(var(--arm-listen) * 70%));
+  stop-opacity: 1;
+}
+.arm2d__hf--end {
+  stop-opacity: 0;
+}
+.arm2d__horizon {
+  stroke: url(#arm2d-hfade);
+  stroke-width: 1.3px;
+  opacity: var(--arm-h);
+}
+/* The glow: a wider, faint second stroke (no blur); behind text the hairline keeps almost all of it. */
+.arm2d__horizon-glow {
+  stroke: url(#arm2d-hfade);
+  stroke-width: 5px;
+  opacity: calc(0.14 * var(--arm-glow) * var(--arm-h));
+}
+.arm2d__back {
+  opacity: 0.32;
+}
+.arm2d__back .arm2d__horizon,
+.arm2d__back .arm2d__ring {
+  stroke-width: 0.8px;
+}
+.arm2d__bead {
+  stroke: color-mix(in oklab, var(--arm-ring), #ff5a50 calc(var(--arm-error) * 100%));
+  stroke-width: 0.012;
+}
+/*
+ * Behind text the cap is shared out so that stacked elements stay within it where they overlap (SVG cannot cap the
+ * composite the way the GL LumaCap pass does): the halo's peak ≤ 0.25 × cap, the bead ≤ 0.4 × cap, a line ≤ 0.7 × cap
+ * (Armilla2d.tsx capShares).
+ * Measured on the avatar layer at 390×844 (07 H-v11-presence).
+ */
+.arm2d__halo {
+  opacity: calc((0.8 + 0.4 * var(--arm-listen)) * var(--arm-halo-o));
+}
+.arm2d__beadg {
+  opacity: var(--arm-bead-o);
+}
+/* Light theme: ink on the page — no glow wash and no halo; lines in deep ink. */
+.arm2d[data-ink='true'] .arm2d__horizon-glow,
+.arm2d[data-ink='true'] .arm2d__halo {
+  opacity: 0;
+}
+
+.arm2d__meniscus {
+  stroke: color-mix(in oklab, var(--arm-bead), #fff 35%);
+  stroke-width: 1.2px;
+}
+.arm2d path.arm2d__liquid {
+  fill: url(#arm2d-liquid);
+  stroke: none;
+  opacity: 0.9;
+}
+.arm2d__spec {
+  fill: #fff;
+  opacity: 0.5;
+}
+.arm2d__spec-soft {
+  fill: #fff;
+  opacity: 0.12;
+}
+.arm2d[data-ink='true'] .arm2d__spec,
+.arm2d[data-ink='true'] .arm2d__spec-soft {
+  opacity: 0;
+}
+.arm2d[data-ink='true'] .arm2d__meniscus {
+  stroke: color-mix(in oklab, var(--arm-bead) 55%, #000);
+  stroke-width: 1.4px;
+}
+.arm2d[data-ink='true'] path.arm2d__liquid {
+  opacity: 0.45;
+}
+/* Light theme behind text: the bead is its shell and meniscus only (no liquid body fill). */
+.arm2d[data-ink='true'][data-behind='true'] path.arm2d__liquid {
+  opacity: 0;
+}
+.arm2d__lq-top {
+  stop-color: color-mix(in oklab, var(--arm-bead) 50%, var(--arm-ring));
+  stop-opacity: 0.95;
+}
+.arm2d__lq-deep {
+  stop-color: color-mix(in oklab, var(--arm-ring) 70%, #000);
+  stop-opacity: 0.7;
+}
+.arm2d[data-ink='true'] .arm2d__lq-deep {
+  stop-color: var(--arm-ring);
+}

@@ -1,0 +1,69 @@
+.icon-btn {
+  --ib: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: max(var(--ib), var(--target));
+  height: max(var(--ib), var(--target));
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  color: var(--text-1);
+  transition:
+    background-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out);
+}
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.75;
+}
+.icon-btn--sm {
+  --ib: 26px;
+  border-radius: var(--r-sm);
+}
+.icon-btn--sm svg {
+  width: 16px;
+  height: 16px;
+}
+.icon-btn--lg {
+  --ib: 44px;
+  border-radius: var(--r-lg);
+}
+.icon-btn--lg svg {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-btn--ghost:hover:not(:disabled),
+.icon-btn--ghost[aria-pressed='true'] {
+  background: var(--bg-3);
+  color: var(--text-0);
+}
+.icon-btn--secondary {
+  background: var(--bg-3);
+  border-color: var(--line-strong);
+  color: var(--text-0);
+}
+.icon-btn--secondary:hover:not(:disabled) {
+  background: var(--bg-4);
+}
+.icon-btn--primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.icon-btn--primary:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+.icon-btn--danger {
+  color: var(--danger);
+}
+.icon-btn--danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+}
+.icon-btn:disabled {
+  opacity: 0.4;
+}
+.icon-btn:focus-visible {
+  border-radius: var(--r-md);
+}

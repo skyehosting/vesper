@@ -1,0 +1,100 @@
+.dialog-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+  background: var(--scrim);
+  animation: dialog-fade var(--dur-2) var(--ease-out);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 480px);
+  max-height: min(86vh, 100%);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-2);
+  color: var(--text-0);
+  animation: dialog-in var(--dur-2) var(--ease-out);
+  overflow: hidden;
+}
+.dialog--sm {
+  width: min(100%, 380px);
+}
+.dialog--lg {
+  width: min(100%, 720px);
+}
+.dialog:focus-visible {
+  box-shadow: var(--shadow-2), var(--focus-ring);
+  border-radius: var(--r-xl);
+}
+
+.dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 6px 22px;
+}
+.dialog__title {
+  font-size: var(--fs-lg);
+  font-weight: 620;
+  line-height: 1.3;
+}
+.dialog__desc {
+  padding: 0 22px;
+  color: var(--text-1);
+  font-size: var(--fs-md);
+}
+.dialog__body {
+  padding: 14px 22px;
+  overflow: auto;
+  min-height: 0;
+}
+/* A scrolling body is a tab stop (Dialog.tsx); show focus inside its edge so the ring isn't clipped. */
+.dialog__body:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: var(--r-sm);
+}
+.dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 20px 18px;
+}
+
+@keyframes dialog-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+}
+
+/* Phones: a bottom sheet. */
+@media (max-width: 719.98px) {
+  .dialog-scrim {
+    place-items: end stretch;
+    padding: 0;
+  }
+  .dialog,
+  .dialog--sm,
+  .dialog--lg {
+    width: 100%;
+    max-height: 92dvh;
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .dialog__footer > * {
+    flex: 1;
+  }
+}

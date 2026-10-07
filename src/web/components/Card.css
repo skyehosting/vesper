@@ -1,0 +1,119 @@
+.card {
+  --card-pad: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: var(--card-pad);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--text-1);
+}
+.card--pad-none {
+  --card-pad: 0;
+}
+.card--pad-sm {
+  --card-pad: 12px;
+  border-radius: var(--r-md);
+}
+.card--pad-lg {
+  --card-pad: 24px;
+}
+.card--muted {
+  background: var(--bg-1);
+}
+.card--accent {
+  border-color: var(--accent-line);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-2));
+}
+.card--danger {
+  border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+}
+.card__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-md);
+  background: var(--bg-3);
+  color: var(--accent-ink);
+}
+.card__icon svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.75;
+}
+.card__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  padding-top: 1px;
+}
+.card__title {
+  color: var(--text-0);
+  font-size: var(--fs-md);
+  font-weight: 620;
+  line-height: 1.35;
+}
+.card__desc {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+.card__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+.card__body {
+  min-width: 0;
+  font-size: var(--fs-md);
+  line-height: 1.5;
+}
+.card__footer {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.card--interactive {
+  padding: 0;
+  transition:
+    border-color var(--dur-1) var(--ease-out),
+    background-color var(--dur-1) var(--ease-out);
+}
+.card__button {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: var(--card-pad);
+  border-radius: inherit;
+  text-align: left;
+  color: inherit;
+}
+.card--interactive:hover {
+  border-color: var(--line-strong);
+  background: var(--bg-3);
+}
+.card--interactive.is-selected {
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 1px var(--accent-line);
+}
+.card__button:focus-visible {
+  border-radius: var(--r-lg);
+}

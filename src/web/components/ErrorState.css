@@ -1,0 +1,94 @@
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  text-align: center;
+}
+.error-state__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--danger) 13%, transparent);
+  color: var(--danger);
+}
+.error-state__icon svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.75;
+}
+.error-state__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.error-state__title {
+  color: var(--text-0);
+  font-size: var(--fs-lg);
+  font-weight: 620;
+}
+.error-state__message {
+  color: var(--text-1);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.error-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* compact: one row inside a card / list / under a field */
+.error-state--compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  max-width: none;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+  background: color-mix(in srgb, var(--danger) 6%, var(--bg-2));
+  text-align: left;
+}
+.error-state--compact .error-state__icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+}
+.error-state--compact .error-state__icon svg {
+  width: 16px;
+  height: 16px;
+}
+.error-state--compact .error-state__text {
+  flex: 1;
+  min-width: 0;
+  gap: 1px;
+}
+.error-state--compact .error-state__title {
+  font-size: var(--fs-md);
+}
+.error-state--compact .error-state__message {
+  font-size: var(--fs-sm);
+}
+.error-state--compact .error-state__actions {
+  flex: none;
+  margin-top: 0;
+}
+@media (max-width: 479.98px) {
+  .error-state--compact {
+    flex-wrap: wrap;
+  }
+  .error-state--compact .error-state__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

@@ -1,0 +1,199 @@
+/*
+ * The presence host (07 D5): one element that moves between stage targets and fills whichever it is in.
+ * Night-stage colours come from the presence tokens in ../star.css.
+ */
+.presence-host {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  contain: layout paint;
+  overflow: hidden;
+}
+.presence-target {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+.presence-target--pos {
+  position: relative;
+}
+.presence-park {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+.presence-host[data-kind='constellation'] {
+  pointer-events: none;
+  contain: strict;
+}
+
+/* Light theme: a small night window behind the 1.0 Star (orb / nebula / 2D) on sized stages. */
+.presence-host--night:is([data-kind='compact'], [data-kind='header'], [data-kind='custom']) {
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--star-night-2) 0%, var(--star-night-1) 64%, var(--star-night-0) 96%, transparent 100%);
+  box-shadow: inset 0 0 0 1px var(--star-night-line);
+}
+
+.presence-canvas {
+  position: absolute !important;
+  inset: 0;
+}
+
+.presence-glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* ── the visible pause control (07 D9) ──────────────────────────────────────────────────────── */
+.presence-pause {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-full);
+  background: var(--surface-over);
+  color: var(--text-1);
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+}
+.presence-pause svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2;
+}
+.presence-target:hover .presence-pause,
+.presence-pause:focus-visible,
+.presence-pause[data-paused] {
+  opacity: 1;
+  transform: none;
+}
+.presence-pause:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.presence-pause:hover {
+  color: var(--text-0);
+  background: var(--bg-3);
+}
+@media (pointer: coarse) {
+  .presence-pause {
+    opacity: 0.85;
+    transform: none;
+  }
+}
+
+/* ── minimal2d: CSS star, no WebGL ─────────────────────────────────────────────────────────── */
+.m2d {
+  --m2d-scale: 1;
+  --m2d-bright: 0.82;
+  --m2d-sat: 1;
+  --m2d-ring: 0;
+  --m2d-ring-scale: 1;
+  --m2d-gather: 1;
+  --m2d-spin: 0deg;
+  --m2d-error: 0;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  filter: saturate(var(--m2d-sat)) brightness(var(--m2d-bright));
+}
+.m2d > * {
+  grid-area: 1 / 1;
+}
+.m2d__corona {
+  width: 88%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--m2d-corona) 60%, transparent) 0%,
+    color-mix(in srgb, var(--m2d-corona) 26%, transparent) 38%,
+    color-mix(in srgb, var(--m2d-corona) 8%, transparent) 70%,
+    transparent 100%
+  );
+  transform: scale(calc(0.86 + 0.14 * var(--m2d-gather)));
+}
+.m2d__ring {
+  width: 54%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1.5px color-mix(in srgb, var(--m2d-mic) 90%, transparent),
+    0 0 16px 2px color-mix(in srgb, var(--m2d-mic) 45%, transparent);
+  opacity: var(--m2d-ring);
+  transform: scale(var(--m2d-ring-scale));
+}
+.m2d__halo {
+  width: 46%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--m2d-body) 75%, transparent) 0%,
+    color-mix(in srgb, var(--m2d-body) 30%, transparent) 45%,
+    transparent 100%
+  );
+  transform: scale(var(--m2d-scale));
+}
+.m2d__rays {
+  width: 74%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  transform: rotate(calc(var(--m2d-spin) * 0.05)) scale(var(--m2d-scale));
+  mix-blend-mode: screen;
+}
+.m2d__ray {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--m2d-core) 70%, transparent) 30%,
+    var(--m2d-core) 50%,
+    color-mix(in srgb, var(--m2d-core) 70%, transparent) 70%,
+    transparent 100%
+  );
+  filter: blur(0.4px);
+}
+.m2d__ray--v {
+  transform: rotate(90deg);
+}
+.m2d__core {
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--star-night-text) 0%,
+    var(--m2d-core) 30%,
+    color-mix(in srgb, var(--m2d-core) 45%, var(--m2d-body)) 62%,
+    var(--m2d-body) 86%,
+    color-mix(in srgb, var(--m2d-body) 30%, transparent) 100%
+  );
+  box-shadow:
+    0 0 14px 3px color-mix(in srgb, var(--m2d-body) 60%, transparent),
+    0 0 36px 8px color-mix(in srgb, var(--m2d-corona) 35%, transparent),
+    inset 0 0 6px color-mix(in srgb, var(--danger) calc(var(--m2d-error) * 70%), transparent);
+  transform: scale(var(--m2d-scale));
+}

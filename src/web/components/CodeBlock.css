@@ -1,0 +1,114 @@
+.code-block {
+  margin: 0;
+  min-width: 0;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--bg-1);
+  overflow: hidden;
+}
+:root[data-theme='light'] .code-block {
+  background: #faf8fd;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] .code-block {
+    background: #faf8fd;
+  }
+}
+.code-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 4px 0 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 560;
+  letter-spacing: 0.02em;
+}
+.code-block__lang {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.code-block__title {
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+.code-block__title::after {
+  content: '·';
+  margin-left: 8px;
+  color: var(--text-2);
+}
+.code-block__tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  flex: none;
+}
+.code-block__pre {
+  margin: 0;
+  padding: 12px 14px;
+  overflow: auto;
+  color: var(--text-0);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  tab-size: 2;
+  white-space: pre;
+}
+.code-block__pre:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent-line);
+  border-radius: 0;
+}
+.code-block.is-wrapped .code-block__pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.code-block__pre code {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Tokens carry both themes' colors; the theme picks one (no re-highlight on switch). */
+.tok {
+  color: var(--d, inherit);
+}
+/* rose-pine-dawn's lighter tokens (gold, muted, subtle) fall under 4.5:1 on the light code background; deepen every
+   light token by the same amount so the palette keeps its hues and all of it passes (07 D9, axe in chat-ui). */
+:root[data-theme='light'] .tok {
+  color: color-mix(in srgb, var(--l, currentColor) 64%, #000);
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme='system'] .tok {
+    color: color-mix(in srgb, var(--l, currentColor) 64%, #000);
+  }
+}
+.tok--i {
+  font-style: italic;
+}
+.tok--b {
+  font-weight: 700;
+}
+.tok--u {
+  text-decoration: underline;
+}
+
+.code-ln {
+  display: inline-block;
+  width: 2.5em;
+  margin-right: 12px;
+  color: var(--text-2);
+  text-align: right;
+  user-select: none;
+  opacity: 0.7;
+}
+.code-ln::before {
+  content: attr(data-n);
+}

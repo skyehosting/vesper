@@ -1,0 +1,71 @@
+/* Dev overlay (test builds): voice latency marks, 07 D6. Opaque surface (not glass: it stays open). */
+.latency {
+  position: fixed;
+  z-index: var(--z-toast);
+  left: max(12px, env(safe-area-inset-left));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  width: min(440px, calc(100vw - 24px));
+  max-height: 46vh;
+  overflow: auto;
+  padding: 10px 12px 12px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg-2) 96%, transparent);
+  box-shadow: var(--shadow-2);
+  color: var(--text-1);
+  font-size: var(--fs-xs);
+}
+.latency__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.latency__head h2 {
+  color: var(--text-0);
+  font-size: var(--fs-sm);
+  font-weight: 620;
+}
+.latency__close {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-sm);
+  color: var(--text-1);
+}
+.latency__close:hover {
+  background: var(--bg-3);
+}
+.latency__close svg {
+  width: 15px;
+  height: 15px;
+}
+.latency__rows {
+  display: grid;
+  gap: 8px;
+}
+.latency__rows li {
+  display: grid;
+  gap: 3px;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+}
+.latency__id {
+  color: var(--text-2);
+}
+.latency__marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+.latency__mark b {
+  color: var(--text-0);
+  font-weight: 600;
+}
+.latency__mark.is-client b {
+  color: var(--accent-ink);
+}
+.latency__empty {
+  color: var(--text-2);
+}

@@ -1,0 +1,26 @@
+.spinner {
+  display: inline-flex;
+  flex: none;
+  color: currentColor;
+}
+.spinner svg {
+  animation: vesper-spin 0.8s linear infinite;
+}
+
+@keyframes vesper-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduced motion: a still, dimmed arc (aria-busy / the label still say "working"). */
+:root[data-reduce-motion='true'] .spinner svg {
+  animation: none;
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner svg {
+    animation: none;
+    opacity: 0.7;
+  }
+}

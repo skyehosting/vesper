@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "ES2023",
+    "lib": [
+      "ES2024",
+      "DOM"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": [
+      "node"
+    ],
+    "strict": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@server/*": [
+        "src/server/*"
+      ]
+    },
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.e2e.json"
+  },
+  "include": [
+    "tests/e2e/**/*.ts",
+    "tests/mocks/**/*.ts",
+    "tests/fakes/**/*.ts",
+    "tests/soak/**/*.ts",
+    "playwright.config.ts",
+    "playwright.soak.config.ts",
+    "src/shared/**/*.ts",
+    "src/server/services.ts",
+    "src/server/platform.ts",
+    "src/server/db/repos.ts",
+    "src/server/db/sqlite.ts"
+  ]
+}
