@@ -1359,11 +1359,14 @@ Made while fitting the Phase 3 seams together (int-server, int-chat-voice, int-s
   - **Privacy** (B13): disclosure `updates` — "Update checks contact GitHub (github.com and its download servers): they
     see your IP address and Vesper's version. Turn checks off in Settings → About." — with its own "Update checks" group
     on the Privacy page (not listed among the services not in use). README intro, "Updates" and "Releasing" say the same.
-  - **Publishing**: electron-builder.yml `publish: {provider: github, releaseType: release}`; package.json
+  - **Publishing**: electron-builder.yml `publish: {provider: github, releaseType: draft}`; package.json
     `repository.url` = `https://github.com/skyehosting/vesper.git` (filled in 2026-10-07; `OWNER` keeps the updater off in forks that haven't set it).
     `.github/workflows/release.yml` (tag `v*.*.*`, windows-latest, Node 24 + npm cache, `contents: write`): tag must
     equal `v` + package.json version, then `npm ci`, typecheck, `npm test`, `VESPER_BUILD_TEST=0 electron-vite build`,
-    `electron-builder --win --x64 --publish always` with `GH_TOKEN = secrets.GITHUB_TOKEN`. `.github/workflows/ci.yml`
+    `electron-builder --win --x64 --publish always` with `GH_TOKEN = secrets.GITHUB_TOKEN`. Since 1.2.1 the workflow first runs
+    `gh release create <tag> --draft` (1.2.0's parallel nsis and portable publishers each created a release, and the
+    `.blockmap` landed in the second; fixed by hand), then electron-builder uploads into that draft, then a last step checks
+    all four files are there and runs `gh release edit <tag> --draft=false --latest`. `.github/workflows/ci.yml`
     (pull requests and pushes to main): `npm ci`, typecheck, `npm test` (the e2e suites need a GPU and a desktop).
     `npm run release <x.y.z>` (`scripts/release.mjs`, `--dry-run`): clean tree on main, newer version → `npm version
     --no-git-tag-version`, commit `Vesper x.y.z`, tag `vx.y.z`, `git push --atomic origin main vx.y.z`. CONTRIBUTING.md.

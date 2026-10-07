@@ -32,12 +32,13 @@ extraFiles:
     to: THIRD_PARTY_NOTICES.txt
 npmRebuild: false
 # Auto-updates (07 H-v12-updates): `electron-builder --publish always` (.github/workflows/release.yml, on a v*.*.* tag)
-# uploads the installer, its .blockmap, latest.yml and the portable exe to a published (not draft) GitHub Release.
+# uploads the installer, its .blockmap, latest.yml and the portable exe to the draft GitHub Release the workflow created
+# first; the workflow publishes it when all four are in.
 # owner/repo come from package.json "repository" (https://github.com/skyehosting/vesper.git): releases are published
 # there and installed copies check there (src/shared/updater.logic.ts).
 publish:
   provider: github
-  releaseType: release
+  releaseType: draft
 win:
   target:
     - target: nsis

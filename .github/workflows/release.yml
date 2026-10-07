@@ -1,7 +1,7 @@
 # Publishes a Vesper release when a version tag is pushed (07 H-v12-updates). `npm run release 1.2.0` bumps the
 # version, commits "Vesper 1.2.0", tags v1.2.0 and pushes both. This workflow then tests, builds the installer and the
-# portable exe, and publishes them (with latest.yml and the installer's .blockmap) as a GitHub Release; installed
-# copies of Vesper find it through latest.yml.
+# portable exe, uploads them (with latest.yml and the installer's .blockmap) to a draft GitHub Release and publishes it
+# once all four files are there; installed copies of Vesper find it through latest.yml.
 name: Release
 
 on:
@@ -49,7 +49,28 @@ jobs:
           VESPER_BUILD_TEST: '0'
         run: npx electron-vite build
 
-      - name: Package and publish the GitHub Release
+      # The release exists (as a draft) before electron-builder runs: its installer and portable targets publish in
+      # parallel, and with no release yet each created its own (1.2.0 ended up with two, the .blockmap in the second).
+      - name: Create the draft release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${GITHUB_REF_NAME}" --draft --verify-tag --title "${GITHUB_REF_NAME#v}" --notes "Vesper ${GITHUB_REF_NAME#v}"
+
+      - name: Package and upload to the draft
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx electron-builder --win --x64 --publish always
+
+      # Published only once every file is in, so an installed copy never sees a latest.yml without its installer.
+      - name: Publish the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          assets="$(gh release view "${GITHUB_REF_NAME}" --json assets --jq '.assets[].name')"
+          echo "$assets"
+          for f in latest.yml "Vesper-Setup-${GITHUB_REF_NAME#v}.exe" "Vesper-Setup-${GITHUB_REF_NAME#v}.exe.blockmap" "Vesper-${GITHUB_REF_NAME#v}-portable.exe"; do
+            grep -qxF "$f" <<<"$assets" || { echo "::error::$f is missing from the release"; exit 1; }
+          done
+          gh release edit "${GITHUB_REF_NAME}" --draft=false --latest
