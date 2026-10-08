@@ -1358,7 +1358,8 @@ Made while fitting the Phase 3 seams together (int-server, int-chat-voice, int-s
     top bar shows "Update ready — Restart" (dismissible, once per version in localStorage; Talk mode has no top bar).
   - **Privacy** (B13): disclosure `updates` — "Update checks contact GitHub (github.com and its download servers): they
     see your IP address and Vesper's version. Turn checks off in Settings → About." — with its own "Update checks" group
-    on the Privacy page (not listed among the services not in use). README intro, "Updates" and "Releasing" say the same.
+    on the Privacy page (not listed among the services not in use). README (intro, "Updates") and docs/GUIDE.md
+    ("Updates", "Releasing") say the same.
   - **Publishing**: electron-builder.yml `publish: {provider: github, releaseType: draft}`; package.json
     `repository.url` = `https://github.com/skyehosting/vesper.git` (filled in 2026-10-07; `OWNER` keeps the updater off in forks that haven't set it).
     `.github/workflows/release.yml` (tag `v*.*.*`, windows-latest, Node 24 + npm cache, `contents: write`): tag must

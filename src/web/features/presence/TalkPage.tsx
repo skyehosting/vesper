@@ -105,6 +105,8 @@ export default function TalkPage({ params }: PageProps): ReactNode {
   const wayOut = s.phase === 'error' ? talkErrorWayOut(s.error, place) : null
   const primary = action === 'setup' && wayOut ? { ...PRIMARY.setup, label: wayOut.setupLabel } : PRIMARY[action]
   const notFound = chatError?.code === 'not_found'
+  const spaceHint = primary.label.toLowerCase()
+  const escHint = s.phase === 'thinking' || s.phase === 'speaking' ? 'interrupt' : 'end'
 
   return (
     <div className="talk" data-phase={s.phase} data-muted={s.muted || undefined} onPointerDown={() => void getAudioEngine().unlock()}>
@@ -214,9 +216,14 @@ export default function TalkPage({ params }: PageProps): ReactNode {
         <p className="talk__hint" aria-hidden={phone || coarse ? true : undefined}>
           {phone || coarse ? (
             primary.label
+          ) : spaceHint === escHint ? (
+            // While Vesper answers both keys interrupt: one label, not the same word twice.
+            <>
+              <Kbd keys="Space" /> or <Kbd keys="Esc" /> {escHint}
+            </>
           ) : (
             <>
-              <Kbd keys="Space" /> {primary.label.toLowerCase()} · <Kbd keys="Esc" /> {s.phase === 'thinking' || s.phase === 'speaking' ? 'interrupt' : 'end'}
+              <Kbd keys="Space" /> {spaceHint} · <Kbd keys="Esc" /> {escHint}
             </>
           )}
         </p>

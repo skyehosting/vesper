@@ -1,6 +1,7 @@
 /**
- * The owner's documents tell the truth about the build (phase 5a P25–P37): README.md and docs/OWNER-NOTES.md (shown
- * in the app as Settings → About → Design notes) are checked against the code they describe.
+ * The owner's documents tell the truth about the build (phase 5a P25–P37): README.md (the repository's landing page),
+ * docs/GUIDE.md (the user guide, which holds the details the README used to) and docs/OWNER-NOTES.md (shown in the app
+ * as Settings → About → Design notes) are checked against the code they describe.
  *
  * - Every quoted UI label ("…" / “…”) must exist in the app's source (not only as a settings-search keyword), and
  *   every "Settings → Section → …" path must start with a real section and name labels that exist.
@@ -9,12 +10,17 @@
  * - Specific claims are tied to the code that decides them: temporary-chat lifetime (P25), password sign-in vs
  *   pairing (P26), mic modes (P28), closing the window (P29), live-check cost and variables (P31), logs (P32),
  *   installer and first run (P33), the pairing dialog's sign-in lifetime (P34), and 05-TESTING's scripts (P37).
+ *   Each claim is checked in the file that holds it now (most moved to the guide); a claim the README still makes is
+ *   checked there too, and the guide's sections are found by their headings (a missing heading fails).
+ * - The update-check disclosure says what the Privacy page says (H-v12-updates), the presence is described as it draws
+ *   (H-v11-presence v1.1.5), and every relative link and image in the public docs resolves to a public file.
  */
 import { describe, expect, it } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { defaultSettings } from '@shared/settings'
+import { disclosure } from '@shared/privacy'
 import { ABSOLUTE_LOOPBACK_BROWSER } from '@server/auth/core'
 import { MAX_IDLE_MS, NO_SUBSCRIBER_MS } from '@server/chat/temporary'
 import { TEMPORARY_CHAT_BANNER, TEMPORARY_CHAT_PILL_LABEL, TEMPORARY_CHAT_TEXT, TEMPORARY_CHAT_TOOLTIP } from '../../../src/web/features/sessions/temporaryChat.logic'
@@ -29,17 +35,29 @@ const norm = (s: string): string =>
     .replace(/ /g, ' ')
     .replace(/\s+/g, ' ')
 
-/** Prose only: fenced code, inline code and link targets removed. */
+/** Prose only: fenced code, inline code, HTML tags (the README's header, images, <kbd>) and link targets removed. */
 function prose(md: string): string {
   return md
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/`[^`\n]*`/g, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<\/?[a-z][^>]*>/gi, ' ')
     .replace(/\]\([^)]*\)/g, ']')
 }
 
+/** The raw text from one heading to the next one named (both must be there, in that order). */
+function between(md: string, from: string, to: string): string {
+  const a = md.indexOf(from)
+  const b = md.indexOf(to, a + from.length)
+  expect(a, `heading ${from}`).toBeGreaterThanOrEqual(0)
+  expect(b, `heading ${to} after ${from}`).toBeGreaterThan(a)
+  return md.slice(a, b)
+}
+
 const README = read('README.md')
+const GUIDE = read('docs/GUIDE.md')
 const NOTES = read('docs/OWNER-NOTES.md')
-const DOCS = { 'README.md': prose(README), 'docs/OWNER-NOTES.md': prose(NOTES) }
+const DOCS = { 'README.md': prose(README), 'docs/GUIDE.md': prose(GUIDE), 'docs/OWNER-NOTES.md': prose(NOTES) }
 
 /** The app's own text: src/{web,main,server,shared}, comments left out, and not the settings-search keywords. */
 const CORPUS = (() => {
@@ -71,7 +89,7 @@ const NOT_UI = new Set([
   '$5 to stop Voyage training on your data',
   '$5',
   'natural',
-  'Things to check with your own keys' // a README heading
+  'Checking with your own keys' // a heading in the guide
 ])
 
 const SECTIONS = [...read('src/web/features/settings/sections.ts').matchAll(/title: '([^']+)'/g)].map((m) => m[1])
@@ -148,26 +166,29 @@ describe('owner docs: labels and paths exist in the app', () => {
     })
   }
 
-  it('README names each access mode as the mode picker does', () => {
-    for (const m of MODES) expect(norm(DOCS['README.md'])).toContain(m)
+  it('README and the guide name each access mode as the mode picker does', () => {
+    for (const doc of ['README.md', 'docs/GUIDE.md'] as const) for (const m of MODES) expect(norm(DOCS[doc])).toContain(m)
   })
 })
 
 describe('owner docs: claims match the code', () => {
   const readme = norm(DOCS['README.md'])
+  const guide = norm(DOCS['docs/GUIDE.md'])
   const notes = norm(DOCS['docs/OWNER-NOTES.md'])
 
   it('P25: temporary chats — one wording, true lifetime, files in a temporary folder', () => {
     const minutes = `${NO_SUBSCRIBER_MS / 60_000} minutes`
     const hours = `${MAX_IDLE_MS / 3_600_000} hours`
-    for (const t of [TEMPORARY_CHAT_TEXT, readme]) {
+    for (const t of [TEMPORARY_CHAT_TEXT, guide]) {
       expect(t).toContain(minutes)
       expect(t).toContain(hours)
       expect(t).toMatch(/when Vesper quits/)
       expect(t).toMatch(/temporary folder/)
     }
-    expect(readme).toContain(norm(TEMPORARY_CHAT_TEXT))
-    expect(readme).not.toMatch(/never written to disk/i)
+    expect(guide).toContain(norm(TEMPORARY_CHAT_TEXT))
+    for (const t of [readme, guide]) expect(t).not.toMatch(/never written to disk/i)
+    // The README's short version keeps the caveat: the AI service still receives a temporary chat's messages.
+    expect(readme).toMatch(/Temporary\** chats are never saved[^.]*AI service you use still receives their messages/)
     // Settings → Chat and Settings → Privacy show this one text, and there is no "New chat menu".
     const chat = read('src/web/features/settings/pages/Chat.tsx')
     const privacy = read('src/web/features/privacy/SettingsPrivacy.tsx')
@@ -177,25 +198,27 @@ describe('owner docs: claims match the code', () => {
   })
 
   it('P26: a password sign-in is announced, only pairing asks for approval, the password comes first', () => {
-    expect(readme).not.toMatch(/every new device has to be approved/i)
-    expect(readme).not.toMatch(/approve the new device/i)
-    expect(readme).toContain('Pair a device')
-    expect(readme).toContain('New sign-in to Vesper')
+    for (const t of [readme, guide]) {
+      expect(t).not.toMatch(/every new device has to be approved/i)
+      expect(t).not.toMatch(/approve the new device/i)
+    }
+    expect(guide).toContain('Pair a device')
+    expect(guide).toContain('New sign-in to Vesper')
     // The server: login() creates an active device and notifies; only a pairing code makes a pending one.
     const service = read('src/server/auth/service.ts')
     const login = service.slice(service.indexOf('async login('), service.indexOf('async sudo('))
     expect(login).not.toMatch(/pending/)
     expect(login).toContain("'New sign-in to Vesper'")
-    expect(readme).toMatch(/Set a password[^.]*first/i)
+    for (const t of [readme, guide]) expect(t).toMatch(/Set a password[^.]*first/i)
   })
 
   it('H-v11-tone: voice tones — the default, the three modes and the command are the ones the app has', () => {
     expect(defaultSettings().voice.tts.toneMode).toBe('conversation')
-    for (const t of [notes, readme]) {
+    for (const t of [notes, guide]) {
       expect(t).toContain('Voice tones')
       expect(t).toMatch(/"Follow the conversation"\**\s*\(the default\)/)
     }
-    for (const raw of [README, NOTES]) for (const m of ['off', 'conversation', 'reply']) expect(raw).toContain(`/voice tone ${m}`)
+    for (const raw of [GUIDE, NOTES]) for (const m of ['off', 'conversation', 'reply']) expect(raw).toContain(`/voice tone ${m}`)
     expect(read('src/web/features/voice/toneCommand.logic.ts')).toMatch(/conversation: \['conversation'/)
     // 1.0.0's "Speak with feeling" switch is gone; the Design notes no longer point at a "Tone" section.
     expect(CORPUS).not.toContain('Speak with feeling')
@@ -217,22 +240,23 @@ describe('owner docs: claims match the code', () => {
 
   it('P28: the mic button is tap-to-dictate by default; holding is Push to talk', () => {
     expect(defaultSettings().voice.stt.mode).toBe('dictate')
-    const voiceIn = readme.slice(readme.indexOf('**Voice in.**'), readme.indexOf('**The Star**'))
+    const voiceIn = norm(prose(between(GUIDE, '### Voice in', '### The presence')))
     expect(voiceIn).toMatch(/Tap the mic button/)
-    for (const s of voiceIn.split(/(?<=[.?!])\s/)) if (/\bhold/i.test(s)) expect(s).toContain('Push to talk')
+    // In the guide's Voice in section, and anywhere in the README, holding the button is only ever Push to talk.
+    for (const t of [voiceIn, readme]) for (const s of t.split(/(?<=[.?!])\s/)) if (/\bhold/i.test(s)) expect(s).toContain('Push to talk')
   })
 
-  it('P29: README says closing the window quits unless the tray switch is on', () => {
+  it('P29: the guide says closing the window quits unless the tray switch is on', () => {
     expect(defaultSettings().desktop.closeToTray).toBe(false)
-    expect(readme).toMatch(/closing (?:its|the) window quits Vesper/i)
-    expect(readme).toContain('Keep running in the tray when closed')
+    expect(guide).toMatch(/closing (?:its|the) window quits Vesper/i)
+    expect(guide).toContain('Keep running in the tray when closed')
   })
 
   it('P31: live-check — what it costs, which variables, where it runs', () => {
     const script = read('scripts/live-check.mjs')
     const vars = new Set([...script.matchAll(/\b([A-Z]+_API_KEY)\b/g)].map((m) => m[1]))
     expect(vars.size).toBeGreaterThan(5)
-    const section = norm(README.slice(README.indexOf('## Things to check with your own keys'), README.indexOf('## Troubleshooting')))
+    const section = norm(between(GUIDE, '## Checking with your own keys', '## Releasing'))
     expect([...vars].filter((v) => !section.includes(v))).toEqual([])
     expect(section).not.toMatch(/read-only/i)
     expect(section).toMatch(/cents/)
@@ -241,28 +265,31 @@ describe('owner docs: claims match the code', () => {
   })
 
   it('P32: logs carry message text only while Diagnostic logging is on', () => {
-    expect(readme).not.toMatch(/never contain message text/i)
-    expect(readme).toContain('Diagnostic logging')
-    expect(readme).toMatch(/Diagnostic logging[^.]*24 hours|24 hours[^.]*Diagnostic logging/)
-    expect(readme).toContain('Models, logs and caches')
+    for (const t of [readme, guide]) expect(t).not.toMatch(/never contain message text/i)
+    expect(guide).toContain('Diagnostic logging')
+    expect(guide).toMatch(/Diagnostic logging[^.]*24 hours|24 hours[^.]*Diagnostic logging/)
+    expect(guide).toContain('Models, logs and caches')
   })
 
   it('P33: installer scope, portable limits, the provider test and the Voyage switch', () => {
     const yml = read('electron-builder.yml')
     expect(yml).toMatch(/oneClick: false/)
     expect(yml).toMatch(/perMachine: false/)
-    // An assisted per-user installer shows the install-mode page and lets you choose the folder.
-    expect(readme).toContain('Only for me')
-    expect(readme).toMatch(/choose the folder/i)
-    expect(readme).not.toMatch(/with no admin prompt\. It adds/)
-    // The portable build lacks only Local network access (manager.ts), so Tailscale is not an installer reason.
     expect(read('src/server/net/manager.ts')).toMatch(/portable: "The portable version can't offer Local network access/)
-    expect(readme).not.toMatch(/\(LAN or Tailscale\)/)
-    expect(readme).toMatch(/Tailscale works in both/)
-    expect(readme).not.toMatch(/press \*\*Test\*\*/)
-    expect(readme).toContain('Test connection')
     expect(defaultSettings().memory.enabled).toBe(false)
-    expect(readme).toContain('Remember with Voyage AI')
+    // The README's short Install section and the guide's full one say the same.
+    for (const t of [readme, guide]) {
+      // An assisted per-user installer shows the install-mode page and lets you choose the folder.
+      expect(t).toContain('Only for me')
+      expect(t).toMatch(/choose the folder/i)
+      expect(t).not.toMatch(/with no admin prompt\. It adds/)
+      // The portable build lacks only Local network access (manager.ts), so Tailscale is not an installer reason.
+      expect(t).not.toMatch(/\(LAN or Tailscale\)/)
+      expect(t).toMatch(/Tailscale works in both/)
+      expect(t).not.toMatch(/press \*\*Test\*\*/)
+      expect(t).toContain('Test connection')
+      expect(t).toContain('Remember with Voyage AI')
+    }
   })
 
   it('P34: the pairing dialog states how long a browser on this PC stays signed in', () => {
@@ -272,8 +299,8 @@ describe('owner docs: claims match the code', () => {
     expect(dialog).toMatch(/less if unused/)
   })
 
-  it('P37: 05-TESTING and README only name scripts that exist, and the coverage status is current', () => {
-    for (const doc of ['docs/05-TESTING.md', 'README.md']) {
+  it('P37: 05-TESTING, README and the guide only name scripts that exist, and the coverage status is current', () => {
+    for (const doc of ['docs/05-TESTING.md', 'README.md', 'docs/GUIDE.md']) {
       const refs = [...read(doc).matchAll(/(?<![\w/])scripts\/([\w.-]+\.(?:mjs|cjs|js|ts))/g)].map((m) => m[1])
       expect(refs.filter((f) => !fs.existsSync(path.join(ROOT, 'scripts', f)))).toEqual([])
     }
@@ -326,14 +353,121 @@ describe('second pass: the app says what the docs say', () => {
     expect(text.length).toBeLessThanOrEqual(48)
   })
 
-  it('P31: the README cost sentence matches the script (free model lists, under 200 Voyage tokens)', () => {
+  it('P31: the guide\'s cost sentence matches the script (free model lists, under 200 Voyage tokens)', () => {
     const script = read('scripts/live-check.mjs')
     expect(script).toMatch(/GET \/models \(free\)/)
     expect(script).toMatch(/< 200 Voyage tokens/)
-    const section = norm(README.slice(README.indexOf('## Things to check with your own keys'), README.indexOf('## Troubleshooting')))
+    const section = norm(between(GUIDE, '## Checking with your own keys', '## Releasing'))
+    expect(norm(NOTES)).not.toMatch(/one small paid request/i)
     expect(section).not.toMatch(/one small paid request/i)
     expect(section).not.toMatch(/a few hundred Voyage tokens/i)
     expect(section).toMatch(/listing models is free/i)
     expect(section).toMatch(/under 200 Voyage tokens/i)
+  })
+})
+
+describe('public docs: the landing page and the guide say the same, and every link resolves', () => {
+  const readme = norm(DOCS['README.md'])
+  const guide = norm(DOCS['docs/GUIDE.md'])
+
+  it('H-v12-updates: README and the guide disclose update checks in the Privacy page\'s words', () => {
+    const [what, optOut] = norm(disclosure('updates')?.summary ?? '').split(/(?<=\.)\s(?=[A-Z])/)
+    expect(what).toMatch(/they see your IP address and Vesper's version\.$/)
+    for (const t of [readme, norm(prose(between(GUIDE, '## Updates', '## Troubleshooting')))]) {
+      expect(t).toContain(what)
+      expect(t).toContain('Nothing else is sent: no chats, settings or keys.')
+      expect(t).toContain(optOut)
+    }
+    for (const t of [readme, guide]) expect(t).toMatch(/the one thing Vesper asks on its own is whether a new version is out/i)
+    // Releasing: the repository installed copies check, and a release goes public only once all its files are in.
+    const at = GUIDE.indexOf('## Releasing')
+    expect(at).toBeGreaterThan(0)
+    const releasing = norm(GUIDE.slice(at))
+    expect(releasing).toContain((JSON.parse(read('package.json')) as { repository: { url: string } }).repository.url)
+    expect(read('.github/workflows/release.yml')).toMatch(/gh release create [^\n]*--draft/)
+    expect(releasing).toMatch(/as a draft/)
+    expect(releasing).toMatch(/once all four files are there/)
+  })
+
+  it('H-v11-presence v1.1.5: the horizon is described as the stationary oscilloscope it draws', () => {
+    expect(read('src/web/features/presence/gl/avatars/armilla/armilla.logic.ts')).toMatch(/export function scopeFrame\(/)
+    for (const t of [readme, guide]) {
+      expect(t).toMatch(/oscilloscope of the real audio/)
+      expect(t).toMatch(/rises and falls in place/)
+      expect(t).not.toMatch(/from the left end to the right|runs the other way|left to right|right to left/i)
+    }
+    // The landing page keeps it short; the guide spells out that nothing moves along the line.
+    expect(guide).toMatch(/nothing slides sideways/)
+  })
+
+  it('docs/images holds only the images the public docs show, and every image says what it shows', () => {
+    const shown = new Set<string>()
+    const noAlt: string[] = []
+    for (const doc of ['README.md', 'docs/GUIDE.md']) {
+      const md = read(doc)
+      for (const m of md.matchAll(/<img\b[^>]*>/g)) if (!/\balt="[^"]{8,}"/.test(m[0])) noAlt.push(`${doc}: ${m[0].slice(0, 80)}`)
+      for (const m of md.matchAll(/!\[\s*\]\(([^)\s]*)\)/g)) noAlt.push(`${doc}: ${m[1]}`)
+      const refs = [
+        ...[...md.matchAll(/\bsrc="([^"]+)"/g)].map((m) => m[1]),
+        ...[...md.matchAll(/\bsrcset="([^"]+)"/g)].flatMap((m) => m[1].split(',').map((c) => c.trim().split(/\s+/)[0])),
+        ...[...md.matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)].map((m) => m[1])
+      ]
+      for (const ref of refs) shown.add(path.posix.normalize(path.posix.join(path.posix.dirname(doc), ref)))
+    }
+    expect(noAlt).toEqual([])
+    // The README shot specs write here; an image no doc shows any more is deleted, not left in the public tree.
+    const unused = fs.readdirSync(path.join(ROOT, 'docs/images')).map((f) => `docs/images/${f}`).filter((f) => !shown.has(f))
+    expect(unused).toEqual([])
+  })
+
+  it('every relative link and image in the public docs points at a public file, and at a heading that exists', () => {
+    /** GitHub's heading anchors: lower case, punctuation dropped, spaces to hyphens, repeats numbered. */
+    const anchors = (md: string): Set<string> => {
+      const out = new Set<string>()
+      const seen = new Map<string, number>()
+      for (const m of md.replace(/```[\s\S]*?```/g, ' ').matchAll(/^#{1,6}\s+(.+?)\s*#*$/gm)) {
+        const base = m[1]
+          .replace(/<[^>]+>/g, '')
+          .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+          .replace(/[*`]/g, '')
+          .trim()
+          .toLowerCase()
+          .replace(/[^\p{L}\p{N}\s_-]/gu, '')
+          .replace(/\s/g, '-')
+        const n = seen.get(base) ?? 0
+        seen.set(base, n + 1)
+        out.add(n ? `${base}-${n}` : base)
+      }
+      return out
+    }
+    const bad: string[] = []
+    const targets = new Map<string, string>()
+    for (const doc of ['README.md', 'docs/GUIDE.md', 'docs/OWNER-NOTES.md', 'CONTRIBUTING.md']) {
+      const md = read(doc).replace(/```[\s\S]*?```/g, ' ').replace(/`[^`\n]*`/g, ' ')
+      const refs = [
+        ...[...md.matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1]),
+        ...[...md.matchAll(/\b(?:href|src)="([^"]+)"/g)].map((m) => m[1]),
+        ...[...md.matchAll(/\bsrcset="([^"]+)"/g)].flatMap((m) => m[1].split(',').map((c) => c.trim().split(/\s+/)[0]))
+      ]
+      for (const ref of refs) {
+        if (/^[a-z][a-z0-9+.-]*:/i.test(ref)) continue // https:, mailto:
+        const [file, hash] = ref.split('#')
+        const target = file ? path.posix.normalize(path.posix.join(path.posix.dirname(doc), file)) : doc
+        if (target.startsWith('..') || !fs.existsSync(path.join(ROOT, target))) bad.push(`${doc}: ${ref} (no such file)`)
+        else {
+          targets.set(target, `${doc}: ${ref}`)
+          if (hash && target.endsWith('.md') && !anchors(read(target)).has(hash)) bad.push(`${doc}: ${ref} (no such heading)`)
+        }
+      }
+    }
+    // Internal notes are kept out of the repository by .git/info/exclude: a public doc never links one.
+    let ignored = ''
+    try {
+      ignored = execFileSync('git', ['check-ignore', ...targets.keys()], { cwd: ROOT, encoding: 'utf8' })
+    } catch (e) {
+      if ((e as { status?: number }).status !== 1) throw e // 1: none of them is ignored
+    }
+    for (const t of ignored.split('\n').filter(Boolean)) bad.push(`${targets.get(t) ?? t} (not public)`)
+    expect(bad).toEqual([])
   })
 })

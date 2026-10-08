@@ -1,5 +1,7 @@
 # Contributing to Vesper
 
+[![CI status](https://img.shields.io/github/actions/workflow/status/skyehosting/vesper/ci.yml?branch=main&label=CI&labelColor=1b1638)](https://github.com/skyehosting/vesper/actions/workflows/ci.yml)
+
 Thanks for helping. Vesper is a Windows desktop app (Electron) and a web app in one: the Electron main process runs
 Vesper's own server, and the same React client is served to the desktop window and to browsers on other devices.
 
@@ -13,7 +15,7 @@ npm run dev
 ```
 
 `npm run dev` starts the desktop app with live reload. `npm run serve` builds and runs the standalone server for
-browsers. The README's "For developers" table lists every command.
+browsers. The [For developers](docs/GUIDE.md#for-developers) table in the user guide lists every command.
 
 ## Tests
 
@@ -29,6 +31,9 @@ The e2e suites need a desktop session and a GPU; run them for anything that touc
 `window.__vesperTest` hooks, `/api/test/*`, `VESPER_*` switches) must sit behind `__VESPER_TEST__` so the release build
 drops it.
 
+Changed something the README shows? Refresh its pictures with the opt-in `README_SHOTS=1` specs ("README images" in
+section 7 of [docs/05-TESTING.md](docs/05-TESTING.md)) and commit `docs/images` with it.
+
 ## Pull requests
 
 - CI (`.github/workflows/ci.yml`, on `windows-latest`) runs `npm ci`, `npm run typecheck` and `npm test` for every pull
@@ -43,4 +48,4 @@ drops it.
 ## Releases
 
 Maintainers release with `npm run release <x.y.z>`; GitHub Actions then builds and publishes the GitHub Release that
-installed copies update from. See the README's "Releasing" section.
+installed copies update from. See [Releasing](docs/GUIDE.md#releasing) in the user guide.

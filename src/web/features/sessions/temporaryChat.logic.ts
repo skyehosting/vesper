@@ -1,5 +1,5 @@
 /**
- * What a temporary chat is, in one wording (phase 5a P25): Settings → Chat, Settings → Privacy and README.md all show
+ * What a temporary chat is, in one wording (phase 5a P25): Settings → Chat, Settings → Privacy and docs/GUIDE.md all show
  * this text, and tests/unit/docs/owner-docs.test.ts ties its numbers to the server's lifetime rules
  * (src/server/chat/temporary.ts: ends on close, after NO_SUBSCRIBER_MS with no device subscribed, after MAX_IDLE_MS
  * without activity, or at quit; attachments live in the temp dir until it ends).

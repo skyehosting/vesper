@@ -20,7 +20,7 @@ Vesper's tests use mock services, so a few behaviours were verified against docu
 - Speech recognition with your real microphone, and echo cancellation when the AI speaks through speakers. Interrupting the voice is "Tap or type" by default; choose "Just start talking" in Settings → Voice in after the echo test, or with headphones.
 - Anthropic's newest models with a long conversation (the history is replayed byte-for-byte as Anthropic requires).
 
-From the source folder after `npm install` (the installed app has no npm), run `npm run live-check` with your keys in environment variables (the README's "Things to check with your own keys" lists their names) to check these in a minute. It makes one small paid request per check (a few cents at most), prints a PASS / WARN / FAIL report, and never saves or prints a key. With no key set it calls nothing.
+From the source folder after `npm install` (the installed app has no npm), run `npm run live-check` with your keys in environment variables (the user guide's "Checking with your own keys", docs/GUIDE.md, lists their names) to check these in a minute. It makes a few small requests per service (listing models is free; a few cents at most in all), prints a PASS / WARN / FAIL report, and never saves or prints a key. With no key set it calls nothing.
 
 ## Licences worth knowing
 - Vesper is open source under GPL-3.0, which matches the speech engine (sherpa-onnx), whose espeak-ng part is GPL-3.0.

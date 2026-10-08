@@ -257,8 +257,8 @@ marker's display), optionally seeds data (`--seed '{"sessions":3}'` → `/api/te
 Bash pass the route without the leading slash (MSYS rewrites `/settings` into a Windows path).
 
 **Screenshot specs.** Some run in every e2e pass (they also assert no console errors / no horizontal overflow); the
-long review passes are opt-in and show as "skipped" otherwise (11 in a full run).
-| Spec (browser project) | Runs | Flags | Output |
+long review passes are opt-in and show as "skipped" otherwise.
+| Spec (browser project unless named) | Runs | Flags | Output |
 | --- | --- | --- | --- |
 | `chat-ui-shots.spec.ts` | always | — | `$PW_OUT/…` (test output dir) |
 | `sessions-ui.shots.spec.ts` | always | — | `test-results/sessions-ui-shots/` |
@@ -267,8 +267,18 @@ long review passes are opt-in and show as "skipped" otherwise (11 in a full run)
 | `memory-ui.shots.spec.ts` | opt-in | `VESPER_SHOTS=1`; `SHOTS=<regex>` limits screens; `SHOTS_MEMORY_ON=1` adds the memory-on states | `$PW_OUT/…` |
 | `presence-shots.spec.ts` | opt-in | `PRESENCE_SHOTS=1` | `test-results/presence-shots/` (outside PW_OUT) |
 | `access-ui.shots.spec.ts` | opt-in | `ACCESS_SHOTS=1`; `ACCESS_SHOTS_ONLY=<regex>`; `ACCESS_SHOTS_DIR` | `test-results/access-ui-shots/` |
+| `electron/readme.shots.spec.ts` (electron project) | opt-in | `README_SHOTS=1`; `README_SHOTS_OUT=<dir>` | The README's desktop images, `docs/images/<name>.webp`; raw and framed review PNGs and `manifest.json` in `README_SHOTS_OUT` (default `.scratch/readme-shots/`) |
+| `readme.shots.spec.ts` | opt-in | `README_SHOTS=1`; `README_SHOTS_OUT=<dir>` | The README's phone images, the same places |
 Example: `VESPER_SHOTS=quick PW_OUT=test-results/me npx playwright test --project browser settings-wizard-shots`.
 Sizes used across the passes: 1440×900, 1138×608 (the owner's primary monitor in DIP) and 390×844 (phone).
+
+**README images.** After a UI change, refresh the pictures on the repository page: `npx electron-vite build`, then
+`README_SHOTS=1 npx playwright test --project=electron tests/e2e/electron/readme.shots.spec.ts` and
+`README_SHOTS=1 npx playwright test --project=browser tests/e2e/browser/readme.shots.spec.ts` (about a minute each).
+Both seed one invented world (`tests/e2e/readmeShots.ts`) on the mock services; the desktop window opens through
+`launchApp` on the secondary display and the phone is a headless Chromium. Before every capture `assertPublishable`
+fails the run if personal or harness text is on screen (names, addresses, user paths, the words mock, e2e, test or
+fixture), or a toast, an error banner or a stray focus ring. Commit `docs/images` together with README.md.
 
 ## 8. Requirement → tests (07 E13)
 Tests carry `@R<n>` tags in titles or comments. `npm run req-coverage` prints, per requirement of 00-BRIEF, the
@@ -326,12 +336,13 @@ fails while any of R1–R22 lacks a tag. Status (Phase 5): every requirement R1�
 - Windows open on the secondary display and never take focus; browsers are headless.
 - Every e2e spec launches its own app/server on a random port and temp dirs; specs never share state through
   AppData.
-- The owner's documents are tested like code (`tests/unit/docs/owner-docs.test.ts`): every quoted label in README.md
-  and docs/OWNER-NOTES.md (the in-app Design notes) must exist in the app's source (settings-search keywords don't
-  count), every "Settings → …" path must start at a real section, retired names (session, side panel, old access-mode
-  names) fail, and specific claims are tied to the code that decides them (defaults, temporary-chat lifetime, sign-in
-  lifetimes, live-check's variables, the installer config). Quote something that isn't Vesper's UI? Add it to the
-  test's `NOT_UI` list.
+- The owner's documents are tested like code (`tests/unit/docs/owner-docs.test.ts`): every quoted label in README.md,
+  docs/GUIDE.md (the user guide) and docs/OWNER-NOTES.md (the in-app Design notes) must exist in the app's source
+  (settings-search keywords don't count), every "Settings → …" path must start at a real section, retired names
+  (session, side panel, old access-mode names) fail, and specific claims are tied to the code that decides them
+  (defaults, temporary-chat lifetime, sign-in lifetimes, live-check's variables, the installer config). Every relative
+  link and image must resolve to a public file, every image needs alt text, and docs/images may hold only images the
+  docs show. Quote something that isn't Vesper's UI? Add it to the test's `NOT_UI` list.
 
 ## 12. Soak / leak gates (07 D14), owner checks and the packaged smoke
 
